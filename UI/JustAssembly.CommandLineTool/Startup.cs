@@ -3,6 +3,8 @@ using JustAssembly.Core;
 using JustAssembly.Infrastructure.Analytics;
 using System;
 using System.IO;
+using System.Threading;
+using JustAssembly.MergeUtilities;
 
 namespace JustAssembly.CommandLineTool
 {
@@ -61,11 +63,16 @@ namespace JustAssembly.CommandLineTool
             string xml = string.Empty;
             try
             {
-                IDiffItem diffItem = APIDiffHelper.GetAPIDifferences(args[0], args[1]);
-                if (diffItem != null)
-                {
-                    xml = diffItem.ToXml();
-                }
+                var typesMap = new OldToNewTupleMap<string> (args[0], args[1]);
+                //var diffItem = APIDiffHelper.GetAPIDifferences(comparableModel.OldType, comparableModel.NewType);
+
+                //if (diffItem != null)
+                //{
+                //    xml = diffItem.ToXml();
+                //}
+
+                var differ = new Differ(new EmptyFileGenerationNotifier());
+                xml = differ.DoDiff(typesMap, CancellationToken.None);
             }
             catch (Exception ex)
             {

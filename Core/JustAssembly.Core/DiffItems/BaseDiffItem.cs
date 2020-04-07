@@ -8,7 +8,7 @@ using Mono.Cecil;
 
 namespace JustAssembly.Core.DiffItems
 {
-    abstract class BaseDiffItem : IDiffItem
+    public abstract class BaseDiffItem : IDiffItem
     {
         private readonly DiffType diffType;
 
@@ -40,7 +40,7 @@ namespace JustAssembly.Core.DiffItems
 
         protected abstract string GetXmlInfoString();
 
-        internal virtual void ToXml(XmlWriter writer)
+        public virtual void ToXml(XmlWriter writer)
         {
             writer.WriteStartElement("DiffItem");
             writer.WriteAttributeString("DiffType", this.DiffType.ToString());
@@ -118,7 +118,7 @@ namespace JustAssembly.Core.DiffItems
 
         protected abstract string GetElementShortName(T element);
 
-        internal override void ToXml(XmlWriter writer)
+        public override void ToXml(XmlWriter writer)
         {
             writer.WriteStartElement(MetadataType.ToString());
             writer.WriteAttributeString("Name", GetElementShortName(this.GetElement()));

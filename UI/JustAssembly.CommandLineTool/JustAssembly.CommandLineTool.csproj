@@ -65,9 +65,90 @@
     <Compile Include="..\..\CompanyAssemblyInfo.cs">
       <Link>Properties\CompanyAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\JustAssembly\Extensions\CollectionExtensions.cs">
+      <Link>Extensions\CollectionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\Interfaces\IOldToNewTupleMap.cs">
+      <Link>Interfaces\IOldToNewTupleMap.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\Interfaces\IProgressNotifier.cs">
+      <Link>Interfaces\IProgressNotifier.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MemberMetadata\MemberDefinitionMetadataBase.cs">
+      <Link>MemberMetadata\MemberDefinitionMetadataBase.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MemberMetadata\MemberMetadata.cs">
+      <Link>MemberMetadata\MemberMetadata.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MemberMetadata\MemberMetadataBase.cs">
+      <Link>MemberMetadata\MemberMetadataBase.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MemberMetadata\ModuleMetadata.cs">
+      <Link>MemberMetadata\ModuleMetadata.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MemberMetadata\TypeMetadata.cs">
+      <Link>MemberMetadata\TypeMetadata.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\AssemblyHelper.cs">
+      <Link>MergeUtilities\AssemblyHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\ClrAssemblyFileMergeManager.cs">
+      <Link>MergeUtilities\ClrAssemblyFileMergeManager.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\ErrorAssemblyReadingEventArgs.cs">
+      <Link>MergeUtilities\ErrorAssemblyReadingEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\FolderMergeManager.cs">
+      <Link>MergeUtilities\FolderMergeManager.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\MemberMergeManager.cs">
+      <Link>MergeUtilities\MemberMergeManager.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\MergeManagerBase.cs">
+      <Link>MergeUtilities\MergeManagerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\ModuleManager.cs">
+      <Link>MergeUtilities\ModuleManager.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\OldToNewTupleMap.cs">
+      <Link>MergeUtilities\OldToNewTupleMap.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\ResourceMergeManager.cs">
+      <Link>MergeUtilities\ResourceMergeManager.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\MergeUtilities\TypesMergeManager.cs">
+      <Link>MergeUtilities\TypesMergeManager.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\Nodes\APIDiff\APIDiffExtensions.cs">
+      <Link>Nodes\APIDiff\APIDiffExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\Nodes\APIDiff\APIDiffInfo.cs">
+      <Link>Nodes\APIDiff\APIDiffInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\Nodes\APIDiff\LoadAPIItemsContext.cs">
+      <Link>Nodes\APIDiff\LoadAPIItemsContext.cs</Link>
+    </Compile>
+    <Compile Include="..\JustAssembly\Nodes\DifferenceDecoration.cs">
+      <Link>Nodes\DifferenceDecoration.cs</Link>
+    </Compile>
+    <Compile Include="DecompilationResultsRepository.cs" />
+    <Compile Include="Differ.cs" />
+    <Compile Include="EmptyFileGenerationNotifier.cs" />
     <Compile Include="FilePathValidater.cs" />
+    <Compile Include="IDecompilationResultsRepository.cs" />
+    <Compile Include="INode.cs" />
+    <Compile Include="Nodes\AssemblyNode.cs" />
+    <Compile Include="Nodes\MemberNode.cs" />
+    <Compile Include="Nodes\MemberNodeBase.cs" />
+    <Compile Include="Nodes\ModuleNode.cs" />
+    <Compile Include="Nodes\NamespaceNode.cs" />
+    <Compile Include="Nodes\NestedTypeNode.cs" />
+    <Compile Include="Nodes\NodeBase.cs" />
+    <Compile Include="Nodes\TypeNode.cs" />
+    <Compile Include="NodeVisitorBase.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlOutputNodeVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -79,6 +160,14 @@
       <Project>{C83612CD-AD42-4655-98A1-336CE7A65012}</Project>
       <Name>JustAssembly.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\JustDecompileEngine\JustDecompile.External.JustAssembly\JustDecompile.External.JustAssembly.csproj">
+      <Project>{b97b9235-c5a9-4f00-aa22-d7e88fbbb4f0}</Project>
+      <Name>JustDecompile.External.JustAssembly</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\JustDecompileEngine\Mono.Cecil\Mono.Cecil.csproj">
+      <Project>{D68133BD-1E63-496E-9EDE-4FBDBF77B486}</Project>
+      <Name>Mono.Cecil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Tools\JustAssembly.API\JustAssembly.API.csproj">
       <Project>{fe0ac2d6-6a79-43a0-95d7-0522d25e8199}</Project>
       <Name>JustAssembly.API</Name>
@@ -88,6 +177,7 @@
       <Name>JustAssembly.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

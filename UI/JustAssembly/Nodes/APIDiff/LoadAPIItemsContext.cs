@@ -93,6 +93,9 @@ namespace JustAssembly.Nodes.APIDiff
                 throw new Exception("Diff item mismatch");
             }
 
+          if (oldDiffItem == null && newDiffItem == null)
+            ;
+
             return oldDiffItem ?? newDiffItem;
         }
     }

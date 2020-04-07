@@ -24,7 +24,7 @@ namespace JustAssembly.Core.DiffItems.Attributes
             throw new NotSupportedException();
         }
 
-        internal override void ToXml(System.Xml.XmlWriter writer)
+      public override void ToXml(System.Xml.XmlWriter writer)
         {
             writer.WriteStartElement("CustomAttribute");
             writer.WriteAttributeString("Name", attribute.Constructor.GetSignature());

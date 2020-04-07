@@ -10,6 +10,8 @@ namespace JustAssembly.Nodes.APIDiff
 
         public APIDiffInfo(IMetadataDiffItem apiDiffItem)
         {
+          if (apiDiffItem == null)
+            ;
             this.APIDiffItem = apiDiffItem;
         }
     }
