@@ -43,6 +43,13 @@ namespace JustAssembly.CommandLineTool
       foreach (var module in node.Modules)
         module.Accept (this);
 
+      xmlWriter.WriteStartElement ("Ressources");
+
+      foreach (var resource in node.Resources)
+        resource.Accept (this);
+
+      xmlWriter.WriteEndElement();
+
       xmlWriter.WriteEndElement();
     }
 
@@ -103,6 +110,18 @@ namespace JustAssembly.CommandLineTool
         return;
 
       xmlWriter.WriteStartElement ("Member");
+      xmlWriter.WriteAttributeString ("Name", node.Name);
+      xmlWriter.WriteAttributeString ("DiffType", node.DifferenceDecoration.ToString());
+
+      xmlWriter.WriteEndElement();
+    }
+
+    public override void VisitResourceNode (ResourceNode node)
+    {
+      if (node.DifferenceDecoration == DifferenceDecoration.NoDifferences)
+        return;
+
+      xmlWriter.WriteStartElement ("Resource");
       xmlWriter.WriteAttributeString ("Name", node.Name);
       xmlWriter.WriteAttributeString ("DiffType", node.DifferenceDecoration.ToString());
 

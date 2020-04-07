@@ -68,6 +68,9 @@
     <Compile Include="..\JustAssembly\Extensions\CollectionExtensions.cs">
       <Link>Extensions\CollectionExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\JustAssembly\Infrastructure\GeneratedProjectOutputInfo.cs">
+      <Link>Infrastructure\GeneratedProjectOutputInfo.cs</Link>
+    </Compile>
     <Compile Include="..\JustAssembly\Interfaces\IOldToNewTupleMap.cs">
       <Link>Interfaces\IOldToNewTupleMap.cs</Link>
     </Compile>
@@ -136,6 +139,7 @@
     <Compile Include="EmptyFileGenerationNotifier.cs" />
     <Compile Include="FilePathValidater.cs" />
     <Compile Include="IDecompilationResultsRepository.cs" />
+    <Compile Include="Infrastructure\Configuration.cs" />
     <Compile Include="INode.cs" />
     <Compile Include="Nodes\AssemblyNode.cs" />
     <Compile Include="Nodes\MemberNode.cs" />
@@ -144,6 +148,7 @@
     <Compile Include="Nodes\NamespaceNode.cs" />
     <Compile Include="Nodes\NestedTypeNode.cs" />
     <Compile Include="Nodes\NodeBase.cs" />
+    <Compile Include="Nodes\ResourceNode.cs" />
     <Compile Include="Nodes\TypeNode.cs" />
     <Compile Include="NodeVisitorBase.cs" />
     <Compile Include="Startup.cs" />

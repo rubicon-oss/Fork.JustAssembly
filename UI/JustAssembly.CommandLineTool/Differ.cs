@@ -3,6 +3,8 @@ using System.IO;
 using System.Threading;
 using JustAssembly.CommandLineTool.Nodes;
 using JustAssembly.Interfaces;
+using JustAssembly.MergeUtilities;
+using JustAssembly.Nodes;
 using JustDecompile.External.JustAssembly;
 using Mono.Cecil;
 
@@ -21,17 +23,29 @@ namespace JustAssembly.CommandLineTool
     {
       try
       {
+        var generationProjectInfoMap = new OldToNewTupleMap<GeneratedProjectOutputInfo>
+            (
+            new GeneratedProjectOutputInfo (assemblyMap.OldType),
+            new GeneratedProjectOutputInfo (assemblyMap.NewType)
+            );
+
         Console.Write ("Loading old assembly...");
-        var assemblyDecompilationResultOld = GetAssemblyDecompilationResult (assemblyMap.OldType, cancellationToken);
+        var assemblyDecompilationResultOld = GetAssemblyDecompilationResult (
+            assemblyMap.OldType,
+            generationProjectInfoMap.OldType.OutputPath,
+            cancellationToken);
         GlobalDecompilationResultsRepository.Instance.AddDecompilationResult (assemblyMap.OldType, assemblyDecompilationResultOld);
         Console.WriteLine ("done.");
 
         Console.Write ("Loading new assembly...");
-        var assemblyDecompilationResultNew = GetAssemblyDecompilationResult (assemblyMap.NewType, cancellationToken);
+        var assemblyDecompilationResultNew = GetAssemblyDecompilationResult (
+            assemblyMap.NewType,
+            generationProjectInfoMap.NewType.OutputPath,
+            cancellationToken);
         GlobalDecompilationResultsRepository.Instance.AddDecompilationResult (assemblyMap.NewType, assemblyDecompilationResultNew);
         Console.WriteLine ("done.");
 
-        var assemblyNode = AssemblyNode.Create (assemblyMap);
+        var assemblyNode = AssemblyNode.Create (assemblyMap, generationProjectInfoMap);
 
         var visitor = new XmlOutputNodeVisitor();
         visitor.VisitAssemblyNode (assemblyNode);
@@ -55,33 +69,18 @@ namespace JustAssembly.CommandLineTool
       }
     }
 
-    private IAssemblyDecompilationResults GetAssemblyDecompilationResult (string path, CancellationToken cancellationToken)
+    private IAssemblyDecompilationResults GetAssemblyDecompilationResult (string path, string outputPath, CancellationToken cancellationToken)
     {
       var assembly = AssemblyDefinition.ReadAssembly (path, new ReaderParameters (GlobalAssemblyResolver.Instance));
 
       return Decompiler.GenerateFiles (
           path,
           assembly,
-          GetTempPath (path),
+          outputPath,
           SupportedLanguage.CSharp,
           cancellationToken,
           true,
           progressNotifier);
-    }
-
-    private string GetTempPath (string fileName)
-    {
-      string path;
-      do
-      {
-        path = string.Format (
-            "{0}\\{1}_{2}",
-            Path.Combine (Path.GetTempPath(), "JustAssembly"),
-            Path.GetFileNameWithoutExtension (fileName),
-            Path.GetRandomFileName());
-      } while (Directory.Exists (path));
-
-      return path;
     }
   }
 }

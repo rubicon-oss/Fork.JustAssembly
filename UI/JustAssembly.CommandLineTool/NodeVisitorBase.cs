@@ -14,6 +14,8 @@ namespace JustAssembly.CommandLineTool
 
     public virtual void VisitNestedTypeNode (NestedTypeNode node) => DefaultVisit (node);
 
+    public virtual void VisitResourceNode (ResourceNode node) => DefaultVisit (node);
+
     public virtual void VisitTypeNode (TypeNode node) => DefaultVisit (node);
 
     private void DefaultVisit (NodeBase node)
