@@ -5,12 +5,11 @@ using System.Linq;
 using JustAssembly.Interfaces;
 using JustAssembly.MergeUtilities;
 using JustAssembly.Nodes;
-using JustAssembly.Nodes.APIDiff;
 using JustDecompile.External.JustAssembly;
 
 namespace JustAssembly.CommandLineTool.Nodes
 {
-  class TypeNode : MemberNodeBase
+  internal class TypeNode : MemberNodeBase
   {
     public static TypeNode Create (NamespaceNode parent, IOldToNewTupleMap<TypeMetadata> map)
     {
@@ -23,13 +22,21 @@ namespace JustAssembly.CommandLineTool.Nodes
       IDecompilationResults result;
 
       if (oldTypeMetadata != null &&
-          GlobalDecompilationResultsRepository.Instance.TryGetDecompilationResult(oldTypeMetadata.AssemblyPath, oldTypeMetadata.Module.TokenId, oldTypeMetadata.TokenId, out result))
+          GlobalDecompilationResultsRepository.Instance.TryGetDecompilationResult (
+              oldTypeMetadata.AssemblyPath,
+              oldTypeMetadata.Module.TokenId,
+              oldTypeMetadata.TokenId,
+              out result))
       {
         oldResult = result;
       }
 
       if (newTypeMetadata != null &&
-          GlobalDecompilationResultsRepository.Instance.TryGetDecompilationResult(newTypeMetadata.AssemblyPath, newTypeMetadata.Module.TokenId, newTypeMetadata.TokenId, out result))
+          GlobalDecompilationResultsRepository.Instance.TryGetDecompilationResult (
+              newTypeMetadata.AssemblyPath,
+              newTypeMetadata.Module.TokenId,
+              newTypeMetadata.TokenId,
+              out result))
       {
         newResult = result;
       }
@@ -46,12 +53,9 @@ namespace JustAssembly.CommandLineTool.Nodes
                   typeNode,
                   new OldToNewTupleMap<TypeMetadata> ((TypeMetadata) e.OldType, (TypeMetadata) e.NewType));
             }
-            else
-            {
-              return new MemberNode (
-                  typeNode,
-                  new OldToNewTupleMap<MemberMetadata> ((MemberMetadata) e.OldType, (MemberMetadata) e.NewType));
-            }
+            return new MemberNode (
+                typeNode,
+                new OldToNewTupleMap<MemberMetadata> ((MemberMetadata) e.OldType, (MemberMetadata) e.NewType));
           }).ToArray();
       typeNode.Members = members;
 
@@ -65,12 +69,12 @@ namespace JustAssembly.CommandLineTool.Nodes
 
     public IReadOnlyList<MemberNodeBase> Members { get; protected set; }
 
-    public string OldSource
+    public override string OldSource
     {
       get { return GetFullSource (OldDecompileResult); }
     }
 
-    public string NewSource
+    public override string NewSource
     {
       get { return GetFullSource (NewDecompileResult); }
     }
@@ -99,8 +103,10 @@ namespace JustAssembly.CommandLineTool.Nodes
       Members = members;
     }
 
+    /// <inheritdoc />
     public override void Accept (NodeVisitorBase visitor) => visitor.VisitTypeNode (this);
 
+    /// <inheritdoc />
     public override DifferenceDecoration GetDifferenceDecoration ()
     {
       if (Map.OldType == null)

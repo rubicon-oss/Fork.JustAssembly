@@ -11,16 +11,18 @@ namespace JustAssembly.CommandLineTool.Nodes
     public IOldToNewTupleMap<string> Map { get; }
 
     public ResourceNode (AssemblyNode parent, IOldToNewTupleMap<string> map)
-        : base (parent, Path.GetFileName(map.GetFirstNotNullItem()))
+        : base (parent, Path.GetFileName (map.GetFirstNotNullItem()))
     {
       Map = map;
     }
 
+    /// <inheritdoc />
     public override void Accept (NodeVisitorBase visitor)
     {
       visitor.VisitResourceNode (this);
     }
 
+    /// <inheritdoc />
     public override DifferenceDecoration GetDifferenceDecoration ()
     {
       if (string.IsNullOrWhiteSpace (Map.OldType))

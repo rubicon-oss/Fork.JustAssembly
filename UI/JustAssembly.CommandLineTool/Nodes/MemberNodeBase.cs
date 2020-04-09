@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using JustAssembly.Interfaces;
-using JustAssembly.Nodes.APIDiff;
 using JustDecompile.External.JustAssembly;
 
 namespace JustAssembly.CommandLineTool.Nodes
@@ -16,8 +15,21 @@ namespace JustAssembly.CommandLineTool.Nodes
 
     public IDecompilationResults NewDecompileResult { get; set; }
 
+    public virtual string OldSource
+    {
+      get { return GetMemberSource (OldDecompileResult, Map.OldType); }
+    }
 
-    protected MemberNodeBase (NamespaceNode parent, IOldToNewTupleMap<MemberDefinitionMetadataBase> map, IDecompilationResults oldDecompileResult, IDecompilationResults newDecompileResult)
+    public virtual string NewSource
+    {
+      get { return GetMemberSource (NewDecompileResult, Map.NewType); }
+    }
+
+    protected MemberNodeBase (
+        NamespaceNode parent,
+        IOldToNewTupleMap<MemberDefinitionMetadataBase> map,
+        IDecompilationResults oldDecompileResult,
+        IDecompilationResults newDecompileResult)
         : base (parent, map.GetFirstNotNullItem().GetName())
     {
       Map = map;
@@ -49,7 +61,7 @@ namespace JustAssembly.CommandLineTool.Nodes
       }
     }
 
-    protected string GetMemberSource(IDecompilationResults result, MemberDefinitionMetadataBase metadata)
+    public string GetMemberSource (IDecompilationResults result, MemberDefinitionMetadataBase metadata)
     {
       if (metadata == null || result == null)
       {
@@ -57,12 +69,12 @@ namespace JustAssembly.CommandLineTool.Nodes
       }
 
       IOffsetSpan offsetSpan;
-      if (result.MemberTokenToDecompiledCodeMap.TryGetValue(metadata.TokenId, out offsetSpan))
+      if (result.MemberTokenToDecompiledCodeMap.TryGetValue (metadata.TokenId, out offsetSpan))
       {
         try
         {
-          string source = File.ReadAllText(result.FilePath);
-          return GetMemberSource(source, offsetSpan, metadata.TokenId, result);
+          var source = File.ReadAllText (result.FilePath);
+          return GetMemberSource (source, offsetSpan, metadata.TokenId, result);
         }
         catch
         {
@@ -72,24 +84,24 @@ namespace JustAssembly.CommandLineTool.Nodes
       return string.Empty;
     }
 
-    private string GetMemberSource(string sourceCode, IOffsetSpan memberOffset, uint memberId, IDecompilationResults decompilationResult)
+    private string GetMemberSource (string sourceCode, IOffsetSpan memberOffset, uint memberId, IDecompilationResults decompilationResult)
     {
-      StringBuilder memberSourceBuilder = new StringBuilder();
+      var memberSourceBuilder = new StringBuilder();
 
-      memberSourceBuilder.Append(GetMemberSourceFromMap(sourceCode, decompilationResult.MemberTokenToAttributesMap, memberId))
-          .Append(GetMemberSourceFromMap(sourceCode, decompilationResult.MemberTokenToDocumentationMap, memberId))
-          .Append(sourceCode.Substring(memberOffset.StartOffset, memberOffset.EndOffset - memberOffset.StartOffset + 1));
+      memberSourceBuilder.Append (GetMemberSourceFromMap (sourceCode, decompilationResult.MemberTokenToAttributesMap, memberId))
+          .Append (GetMemberSourceFromMap (sourceCode, decompilationResult.MemberTokenToDocumentationMap, memberId))
+          .Append (sourceCode.Substring (memberOffset.StartOffset, memberOffset.EndOffset - memberOffset.StartOffset + 1));
 
       return memberSourceBuilder.ToString();
     }
 
-    private string GetMemberSourceFromMap(string sourceCode, IDictionary<uint, IOffsetSpan> memberIdToOffsetMap, uint memberId)
+    private string GetMemberSourceFromMap (string sourceCode, IDictionary<uint, IOffsetSpan> memberIdToOffsetMap, uint memberId)
     {
       IOffsetSpan offset;
 
-      if (memberIdToOffsetMap.TryGetValue(memberId, out offset))
+      if (memberIdToOffsetMap.TryGetValue (memberId, out offset))
       {
-        return sourceCode.Substring(offset.StartOffset, offset.EndOffset - offset.StartOffset + 1);
+        return sourceCode.Substring (offset.StartOffset, offset.EndOffset - offset.StartOffset + 1);
       }
       return string.Empty;
     }

@@ -38,21 +38,21 @@ namespace JustAssembly.CommandLineTool.Nodes
     {
     }
 
+    /// <inheritdoc />
     public override void Accept (NodeVisitorBase visitor)
     {
       visitor.VisitNestedTypeNode (this);
     }
 
+    /// <inheritdoc />
     public override DifferenceDecoration GetDifferenceDecoration ()
     {
       if (Map.OldType == null)
-      {
         return DifferenceDecoration.Added;
-      }
+
       if (Map.NewType == null)
-      {
         return DifferenceDecoration.Deleted;
-      }
+
       if (Parent.DifferenceDecoration == DifferenceDecoration.Modified)
       {
         if (OldDecompileResult.MemberTokenToDecompiledCodeMap.ContainsKey (Map.OldType.TokenId))
@@ -63,6 +63,7 @@ namespace JustAssembly.CommandLineTool.Nodes
               : DifferenceDecoration.Modified;
         }
       }
+
       return DifferenceDecoration.NoDifferences;
     }
   }

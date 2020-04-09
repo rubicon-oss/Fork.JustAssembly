@@ -34,8 +34,10 @@ namespace JustAssembly.CommandLineTool.Nodes
       Types = types;
     }
 
+    /// <inheritdoc />
     public override void Accept (NodeVisitorBase visitor) => visitor.VisitNamespaceNode (this);
 
+    /// <inheritdoc />
     public override DifferenceDecoration GetDifferenceDecoration ()
     {
       var isNew = true;

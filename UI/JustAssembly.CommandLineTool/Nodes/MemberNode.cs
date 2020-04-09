@@ -7,25 +7,23 @@ namespace JustAssembly.CommandLineTool.Nodes
 {
   internal class MemberNode : MemberNodeBase
   {
-    public IOldToNewTupleMap<MemberMetadata> Map { get; }
-
     public MemberNode (TypeNode parent, IOldToNewTupleMap<MemberMetadata> map)
         : base (parent, map)
     {
-      Map = map;
     }
 
     public MemberNode (NestedTypeNode parent, IOldToNewTupleMap<MemberMetadata> map)
         : base (parent, map)
     {
-      Map = map;
     }
 
+    /// <inheritdoc />
     public override void Accept (NodeVisitorBase visitor)
     {
       visitor.VisitMemberNode (this);
     }
 
+    /// <inheritdoc />
     public override DifferenceDecoration GetDifferenceDecoration ()
     {
       if (Map.OldType == null)

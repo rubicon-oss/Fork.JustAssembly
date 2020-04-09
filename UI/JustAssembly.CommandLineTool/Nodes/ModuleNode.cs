@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JustAssembly.Core;
 using JustAssembly.Interfaces;
 using JustAssembly.MergeUtilities;
 using JustAssembly.Nodes;
-using JustAssembly.Nodes.APIDiff;
 
 namespace JustAssembly.CommandLineTool.Nodes
 {
@@ -42,8 +40,10 @@ namespace JustAssembly.CommandLineTool.Nodes
       Namespaces = namespaces;
     }
 
+    /// <inheritdoc />
     public override void Accept (NodeVisitorBase visitor) => visitor.VisitModuleNode (this);
 
+    /// <inheritdoc />
     public override DifferenceDecoration GetDifferenceDecoration ()
     {
       if (Map.OldType == null)
@@ -53,13 +53,6 @@ namespace JustAssembly.CommandLineTool.Nodes
         return DifferenceDecoration.Deleted;
 
       return ModuleManager.AreModulesEquals (Map.OldType, Map.NewType) ? DifferenceDecoration.NoDifferences : DifferenceDecoration.Modified;
-    }
-
-    private static IReadOnlyList<IMetadataDiffItem> GetDiffItemsList (
-        IEnumerable<IOldToNewTupleMap<TypeMetadata>> metadataList,
-        LoadAPIItemsContext context)
-    {
-      return context == null ? null : metadataList.Select (context.GetDiffItem).ToList();
     }
   }
 }

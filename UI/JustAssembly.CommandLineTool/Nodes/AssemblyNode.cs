@@ -27,24 +27,24 @@ namespace JustAssembly.CommandLineTool.Nodes
       IAssemblyDecompilationResults oldAssemblyResult;
       IAssemblyDecompilationResults newAssemblyResult;
 
-      if (GlobalDecompilationResultsRepository.Instance.TryGetAssemblyDecompilationResult(assemblyMap.OldType, out oldAssemblyResult))
+      if (GlobalDecompilationResultsRepository.Instance.TryGetAssemblyDecompilationResult (assemblyMap.OldType, out oldAssemblyResult))
       {
         oldResources = oldAssemblyResult.ResourcesFilePaths;
       }
 
-      if (GlobalDecompilationResultsRepository.Instance.TryGetAssemblyDecompilationResult(assemblyMap.NewType, out newAssemblyResult))
+      if (GlobalDecompilationResultsRepository.Instance.TryGetAssemblyDecompilationResult (assemblyMap.NewType, out newAssemblyResult))
       {
         newResources = newAssemblyResult.ResourcesFilePaths;
       }
 
-      var resourceMergeManager = new ResourceMergeManager(
-          new OldToNewTupleMap<ICollection<string>>(oldResources, newResources), 
-          (a, b) => string.Compare(generationProjectInfoMap.OldType.GetRelativePath(a), generationProjectInfoMap.OldType.GetRelativePath(b), true),
-          (a, b) => string.Compare(generationProjectInfoMap.NewType.GetRelativePath(a), generationProjectInfoMap.NewType.GetRelativePath(b), true),
-          (a, b) => ResourceNameComparer(generationProjectInfoMap, a, b));
+      var resourceMergeManager = new ResourceMergeManager (
+          new OldToNewTupleMap<ICollection<string>> (oldResources, newResources),
+          (a, b) => string.Compare (generationProjectInfoMap.OldType.GetRelativePath (a), generationProjectInfoMap.OldType.GetRelativePath (b), true),
+          (a, b) => string.Compare (generationProjectInfoMap.NewType.GetRelativePath (a), generationProjectInfoMap.NewType.GetRelativePath (b), true),
+          (a, b) => ResourceNameComparer (generationProjectInfoMap, a, b));
 
       var resourceNodes = resourceMergeManager.GetMergedCollection()
-          .Select(e => new ResourceNode(assemblyNode, e))
+          .Select (e => new ResourceNode (assemblyNode, e))
           .ToArray();
       assemblyNode.Resources = resourceNodes;
 
@@ -65,8 +65,10 @@ namespace JustAssembly.CommandLineTool.Nodes
       Resources = resources;
     }
 
+    /// <inheritdoc />
     public override void Accept (NodeVisitorBase visitor) => visitor.VisitAssemblyNode (this);
 
+    /// <inheritdoc />
     public override DifferenceDecoration GetDifferenceDecoration ()
     {
       if (string.IsNullOrWhiteSpace (Map.OldType))
@@ -81,31 +83,26 @@ namespace JustAssembly.CommandLineTool.Nodes
       return DifferenceDecoration.NoDifferences;
     }
 
-    private static int ResourceNameComparer(IOldToNewTupleMap<GeneratedProjectOutputInfo> generationProjectInfoMap, string oldName, string newName)
+    private static int ResourceNameComparer (IOldToNewTupleMap<GeneratedProjectOutputInfo> generationProjectInfoMap, string oldName, string newName)
     {
-      bool isOldNameEmpty = string.IsNullOrWhiteSpace(oldName);
-
-      bool isNewNameEmpty = string.IsNullOrWhiteSpace(newName);
+      var isOldNameEmpty = string.IsNullOrWhiteSpace (oldName);
+      var isNewNameEmpty = string.IsNullOrWhiteSpace (newName);
 
       if (!isOldNameEmpty && !isNewNameEmpty)
       {
-        oldName = generationProjectInfoMap.OldType.GetRelativePath(oldName);
-        newName = generationProjectInfoMap.NewType.GetRelativePath(newName);
+        oldName = generationProjectInfoMap.OldType.GetRelativePath (oldName);
+        newName = generationProjectInfoMap.NewType.GetRelativePath (newName);
 
-        return string.Compare(oldName, newName, true);
+        return string.Compare (oldName, newName, true);
       }
-      else if (isOldNameEmpty && isNewNameEmpty)
-      {
+
+      if (isOldNameEmpty && isNewNameEmpty)
         return 0;
-      }
-      else if (isOldNameEmpty && !isNewNameEmpty)
-      {
+
+      if (isOldNameEmpty && !isNewNameEmpty)
         return 1;
-      }
-      else
-      {
-        return -1;
-      }
+
+      return -1;
     }
   }
 }

@@ -11,9 +11,7 @@ namespace JustAssembly.CommandLineTool.Nodes
 
     public string Name { get; }
 
-    public bool BreakingChangesOnly => false;
-
-    public DifferenceDecoration DifferenceDecoration => _difference.HasValue ? _difference.Value : (_difference = GetDifferenceDecoration()).Value;
+    public DifferenceDecoration DifferenceDecoration => _difference ?? (_difference = GetDifferenceDecoration()).Value;
 
     protected NodeBase (string name)
         : this (null, name)

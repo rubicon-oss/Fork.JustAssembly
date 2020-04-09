@@ -12,12 +12,15 @@ namespace JustAssembly.CommandLineTool
 {
   internal class XmlOutputNodeVisitor : NodeVisitorBase, IDisposable
   {
+    private readonly bool includeSourceCode;
+
     private readonly StringBuilder stringBuilder;
     private readonly StringWriter stringWriter;
     private readonly XmlTextWriter xmlWriter;
 
-    public XmlOutputNodeVisitor ()
+    public XmlOutputNodeVisitor (bool includeSourceCode)
     {
+      this.includeSourceCode = includeSourceCode;
       stringBuilder = new StringBuilder();
       stringWriter = new StringWriter (stringBuilder);
       xmlWriter = new XmlTextWriter (stringWriter);
@@ -112,6 +115,27 @@ namespace JustAssembly.CommandLineTool
       xmlWriter.WriteStartElement ("Member");
       xmlWriter.WriteAttributeString ("Name", node.Name);
       xmlWriter.WriteAttributeString ("DiffType", node.DifferenceDecoration.ToString());
+
+      if (includeSourceCode)
+      {
+        var oldSource = node.OldSource;
+        if (!string.IsNullOrEmpty (oldSource))
+        {
+          xmlWriter.WriteStartElement ("Source");
+          xmlWriter.WriteAttributeString ("Type", "Old");
+          xmlWriter.WriteCData (string.Concat (Environment.NewLine, oldSource, Environment.NewLine));
+          xmlWriter.WriteEndElement();
+        }
+
+        var newSource = node.NewSource;
+        if (!string.IsNullOrEmpty (newSource))
+        {
+          xmlWriter.WriteStartElement ("Source");
+          xmlWriter.WriteAttributeString ("Type", "New");
+          xmlWriter.WriteCData (string.Concat (Environment.NewLine, newSource, Environment.NewLine));
+          xmlWriter.WriteEndElement();
+        }
+      }
 
       xmlWriter.WriteEndElement();
     }
