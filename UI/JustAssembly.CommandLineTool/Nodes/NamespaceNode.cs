@@ -28,7 +28,7 @@ namespace JustAssembly.CommandLineTool.Nodes
     public IReadOnlyList<TypeNode> Types { get; private set; }
 
     public NamespaceNode (ModuleNode parent, string name, IReadOnlyList<TypeNode> types)
-        : base (parent, name)
+        : base (parent, name, "")
     {
       Parent = parent;
       Types = types;

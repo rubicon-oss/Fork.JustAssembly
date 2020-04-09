@@ -33,7 +33,7 @@ namespace JustAssembly.CommandLineTool.Nodes
     public IReadOnlyList<NamespaceNode> Namespaces { get; private set; }
 
     public ModuleNode (AssemblyNode parent, IOldToNewTupleMap<ModuleMetadata> map, IReadOnlyList<NamespaceNode> namespaces)
-        : base (parent, map.GetFirstNotNullItem().GetName())
+        : base (parent, "", map.GetFirstNotNullItem().GetName())
     {
       Parent = parent;
       Map = map;

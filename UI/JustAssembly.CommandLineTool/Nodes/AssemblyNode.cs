@@ -58,7 +58,7 @@ namespace JustAssembly.CommandLineTool.Nodes
     public IReadOnlyList<ResourceNode> Resources { get; private set; }
 
     public AssemblyNode (IOldToNewTupleMap<string> map, IReadOnlyList<ModuleNode> modules, IReadOnlyList<ResourceNode> resources)
-        : base (map.GetFirstNotNullItem())
+        : base ("", map.GetFirstNotNullItem())
     {
       Map = map;
       Modules = modules;

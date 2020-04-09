@@ -63,16 +63,10 @@ namespace JustAssembly.CommandLineTool
             string xml = string.Empty;
             try
             {
-                var typesMap = new OldToNewTupleMap<string> (args[0], args[1]);
-                //var diffItem = APIDiffHelper.GetAPIDifferences(comparableModel.OldType, comparableModel.NewType);
-
-                //if (diffItem != null)
-                //{
-                //    xml = diffItem.ToXml();
-                //}
+                var typesMap = new OldToNewTupleMap<string> (oldAssemblyPath, newAssemblyPath);
 
                 var differ = new Differ(new EmptyFileGenerationNotifier());
-                xml = differ.DoDiff(typesMap, CancellationToken.None);
+                xml = differ.CreateXMLDiff(typesMap, CancellationToken.None);
             }
             catch (Exception ex)
             {

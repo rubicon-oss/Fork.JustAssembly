@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Xml.Serialization;
 using JustAssembly.CommandLineTool.Nodes;
+using JustAssembly.CommandLineTool.XML;
 using JustAssembly.Interfaces;
 using JustAssembly.MergeUtilities;
 using JustAssembly.Nodes;
@@ -19,7 +21,7 @@ namespace JustAssembly.CommandLineTool
       this.progressNotifier = progressNotifier;
     }
 
-    public string DoDiff (IOldToNewTupleMap<string> assemblyMap, CancellationToken cancellationToken)
+    public string CreateXMLDiff (IOldToNewTupleMap<string> assemblyMap, CancellationToken cancellationToken)
     {
       try
       {
@@ -47,20 +49,17 @@ namespace JustAssembly.CommandLineTool
 
         var assemblyNode = AssemblyNode.Create (assemblyMap, generationProjectInfoMap);
 
-        var visitor = new XmlOutputNodeVisitor();
+        var visitor = new ChangeSetNodeVisitor (true);
         visitor.VisitAssemblyNode (assemblyNode);
 
-        return visitor.AsString();
+        var changeSet = visitor.AsChangeSet();
 
-        //using (StringWriter stringWriter = new StringWriter())
-        //{
-        //  using (XmlWriter xmlWriter = new XmlTextWriter(stringWriter) { Formatting = Formatting.Indented })
-        //  {
-        //    DiffAssembly (assemblyMap);
-        //  }
-
-        //  return stringWriter.ToString();
-        //}
+        var xmlSerializer = new XmlSerializer (typeof (ChangeSet));
+        using (var stringWriter = new StringWriter())
+        {
+          xmlSerializer.Serialize (stringWriter, changeSet);
+          return stringWriter.ToString();
+        }
       }
       catch (Exception ex)
       {

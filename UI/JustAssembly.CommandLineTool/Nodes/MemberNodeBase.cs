@@ -30,7 +30,7 @@ namespace JustAssembly.CommandLineTool.Nodes
         IOldToNewTupleMap<MemberDefinitionMetadataBase> map,
         IDecompilationResults oldDecompileResult,
         IDecompilationResults newDecompileResult)
-        : base (parent, map.GetFirstNotNullItem().GetName())
+        : base (parent, parent.Namespace, map.GetFirstNotNullItem().GetName())
     {
       Map = map;
       OldDecompileResult = oldDecompileResult;
@@ -38,7 +38,7 @@ namespace JustAssembly.CommandLineTool.Nodes
     }
 
     protected MemberNodeBase (TypeNode parent, IOldToNewTupleMap<MemberDefinitionMetadataBase> map)
-        : base (parent, map.GetFirstNotNullItem().GetName())
+        : base (parent, $"{parent.Namespace}.{parent.Name}", map.GetFirstNotNullItem().GetName())
     {
       Map = map;
 
@@ -50,7 +50,7 @@ namespace JustAssembly.CommandLineTool.Nodes
     }
 
     protected MemberNodeBase (NestedTypeNode parent, IOldToNewTupleMap<MemberDefinitionMetadataBase> map)
-        : base (parent, map.GetFirstNotNullItem().GetName())
+        : base (parent, $"{parent.Namespace}.{parent.Name}", map.GetFirstNotNullItem().GetName())
     {
       Map = map;
 

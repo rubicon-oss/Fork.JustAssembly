@@ -11,16 +11,19 @@ namespace JustAssembly.CommandLineTool.Nodes
 
     public string Name { get; }
 
+    public string Namespace { get; }
+
     public DifferenceDecoration DifferenceDecoration => _difference ?? (_difference = GetDifferenceDecoration()).Value;
 
-    protected NodeBase (string name)
-        : this (null, name)
+    protected NodeBase (string @namespace, string name)
+        : this (null, @namespace, name)
     {
     }
 
-    protected NodeBase (NodeBase parent, string name)
+    protected NodeBase (NodeBase parent, string @namespace, string name)
     {
       Parent = parent;
+      Namespace = @namespace;
       Name = name;
     }
 

@@ -11,7 +11,7 @@ namespace JustAssembly.CommandLineTool.Nodes
     public IOldToNewTupleMap<string> Map { get; }
 
     public ResourceNode (AssemblyNode parent, IOldToNewTupleMap<string> map)
-        : base (parent, Path.GetFileName (map.GetFirstNotNullItem()))
+        : base (parent, "", Path.GetFileName (map.GetFirstNotNullItem())) // todo add correct namespace
     {
       Map = map;
     }
