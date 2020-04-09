@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Xml.Serialization;
@@ -12,47 +13,50 @@ using Mono.Cecil;
 
 namespace JustAssembly.CommandLineTool
 {
-  public class Differ
+  internal class Differ
   {
-    private readonly ChangeSet ignoreChangeSet;
+    private readonly IgnoredChangesSet ignoreChangeSet;
     private readonly IFileGenerationNotifier progressNotifier;
 
-    public Differ (ChangeSet ignoreChangeSet, IFileGenerationNotifier progressNotifier)
+    public Differ (IgnoredChangesSet ignoreChangeSet, IFileGenerationNotifier progressNotifier)
     {
       this.ignoreChangeSet = ignoreChangeSet;
       this.progressNotifier = progressNotifier;
     }
 
-    public string CreateXMLDiff (IOldToNewTupleMap<string> assemblyMap, CancellationToken cancellationToken)
+    public AssemblyNode CreateAssemblyNode (IOldToNewTupleMap<string> assemblyMap)
+    {
+      var generationProjectInfoMap = new OldToNewTupleMap<GeneratedProjectOutputInfo>
+          (
+          new GeneratedProjectOutputInfo (assemblyMap.OldType),
+          new GeneratedProjectOutputInfo (assemblyMap.NewType)
+          );
+
+      Console.Write ("Loading old assembly...");
+      var assemblyDecompilationResultOld = GetAssemblyDecompilationResult (
+          assemblyMap.OldType,
+          generationProjectInfoMap.OldType.OutputPath,
+          CancellationToken.None);
+      GlobalDecompilationResultsRepository.Instance.AddDecompilationResult (assemblyMap.OldType, assemblyDecompilationResultOld);
+      Console.WriteLine ("done.");
+
+      Console.Write ("Loading new assembly...");
+      var assemblyDecompilationResultNew = GetAssemblyDecompilationResult (
+          assemblyMap.NewType,
+          generationProjectInfoMap.NewType.OutputPath,
+          CancellationToken.None);
+      GlobalDecompilationResultsRepository.Instance.AddDecompilationResult (assemblyMap.NewType, assemblyDecompilationResultNew);
+      Console.WriteLine ("done.");
+
+      return AssemblyNode.Create (assemblyMap, generationProjectInfoMap);
+    }
+
+    public string CreateXMLDiff (AssemblyNode assemblyNode)
     {
       try
       {
-        var generationProjectInfoMap = new OldToNewTupleMap<GeneratedProjectOutputInfo>
-            (
-            new GeneratedProjectOutputInfo (assemblyMap.OldType),
-            new GeneratedProjectOutputInfo (assemblyMap.NewType)
-            );
-
-        Console.Write ("Loading old assembly...");
-        var assemblyDecompilationResultOld = GetAssemblyDecompilationResult (
-            assemblyMap.OldType,
-            generationProjectInfoMap.OldType.OutputPath,
-            cancellationToken);
-        GlobalDecompilationResultsRepository.Instance.AddDecompilationResult (assemblyMap.OldType, assemblyDecompilationResultOld);
-        Console.WriteLine ("done.");
-
-        Console.Write ("Loading new assembly...");
-        var assemblyDecompilationResultNew = GetAssemblyDecompilationResult (
-            assemblyMap.NewType,
-            generationProjectInfoMap.NewType.OutputPath,
-            cancellationToken);
-        GlobalDecompilationResultsRepository.Instance.AddDecompilationResult (assemblyMap.NewType, assemblyDecompilationResultNew);
-        Console.WriteLine ("done.");
-
-        var assemblyNode = AssemblyNode.Create (assemblyMap, generationProjectInfoMap);
-
         var visitor = new ChangeSetNodeVisitor (ignoreChangeSet, true);
-        visitor.VisitAssemblyNode (assemblyNode);
+        assemblyNode.Accept (visitor);
 
         var changeSet = visitor.AsChangeSet();
 
@@ -70,6 +74,77 @@ namespace JustAssembly.CommandLineTool
       }
     }
 
+    public void CreatePatchFile (AssemblyNode assemblyNode, string outputPath)
+    {
+      try
+      {
+        var visitor = new ChangedNodesNodeVisitor (ignoreChangeSet, true);
+        assemblyNode.Accept (visitor);
+
+        var changedNodes = visitor.GetChangedNodes();
+
+        var tempFolder = Path.Combine (Path.GetTempPath(), "JustAssembly_" + Path.GetRandomFileName());
+        Directory.CreateDirectory (tempFolder);
+
+        var oldFolder = Path.Combine (tempFolder, "old");
+        Directory.CreateDirectory (oldFolder);
+
+        var newFolder = Path.Combine (tempFolder, "new");
+        Directory.CreateDirectory (newFolder);
+
+
+        foreach (var node in changedNodes)
+        {
+          var fileName = GetNormalizedName (node);
+
+          if (!string.IsNullOrEmpty (node.OldSource))
+          {
+            using (var writer = File.CreateText (Path.Combine (oldFolder, fileName)))
+            {
+              writer.WriteLine ("# Namespace: " + node.Namespace);
+              writer.WriteLine ("# Name: " + node.Name);
+              writer.Write (node.OldSource);
+            }
+          }
+
+          if (!string.IsNullOrEmpty (node.NewSource))
+          {
+            using (var writer = File.CreateText (Path.Combine (newFolder, fileName)))
+            {
+              writer.WriteLine ("# Namespace: " + node.Namespace);
+              writer.WriteLine ("# Name: " + node.Name);
+              writer.Write (node.NewSource);
+            }
+          }
+        }
+
+        var processStartInfo = new ProcessStartInfo ("git.exe");
+        processStartInfo.CreateNoWindow = true;
+        processStartInfo.FileName = "cmd.exe";
+        processStartInfo.Arguments = $"/c \"git diff --no-index old new > out.patch";
+        processStartInfo.WorkingDirectory = tempFolder;
+
+        var process = Process.Start (processStartInfo);
+        process.WaitForExit();
+
+        File.Delete (outputPath);
+        File.Move (Path.Combine (tempFolder, "out.patch"), outputPath);
+
+        try
+        {
+          Directory.Delete (tempFolder, true);
+        }
+        catch
+        {
+        }
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine ("Could not create path file: \r\n" + ex);
+        throw;
+      }
+    }
+
     private IAssemblyDecompilationResults GetAssemblyDecompilationResult (string path, string outputPath, CancellationToken cancellationToken)
     {
       var assembly = AssemblyDefinition.ReadAssembly (path, new ReaderParameters (GlobalAssemblyResolver.Instance));
@@ -82,6 +157,20 @@ namespace JustAssembly.CommandLineTool
           cancellationToken,
           true,
           progressNotifier);
+    }
+
+    private static string GetNormalizedName (MemberNodeBase node)
+    {
+      string ns = node.Namespace;
+      if (ns.Length > 120)
+        ns = ns.Substring (0, 120);
+
+      string name = node.Name;
+      if (name.Length > 50)
+        name = name.Substring (0, 50);
+
+      var unsanitizedPath = $"{ns}__{name}__{Path.GetRandomFileName()}";
+      return string.Join ("_", unsanitizedPath.Split (Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
     }
   }
 }

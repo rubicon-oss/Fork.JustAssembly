@@ -1,26 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using JustAssembly.CommandLineTool.Nodes;
 using JustAssembly.CommandLineTool.XML;
 using JustAssembly.Nodes;
 
 namespace JustAssembly.CommandLineTool
 {
-  internal class ChangeSetNodeVisitor : NodeVisitorBase
+  internal class ChangedNodesNodeVisitor : NodeVisitorBase
   {
     private readonly IgnoredChangesSet _ignoreChangeSet;
-    private readonly ChangeSetBuilder _changeSetBuilder = new ChangeSetBuilder();
+    private readonly List<MemberNodeBase> _changedNodes = new List<MemberNodeBase>();
 
     public bool IncludeSourceCode { get; }
 
-    public ChangeSetNodeVisitor (IgnoredChangesSet ignoreChangeSet, bool includeSourceCode)
+    public ChangedNodesNodeVisitor (IgnoredChangesSet ignoreChangeSet, bool includeSourceCode)
     {
       _ignoreChangeSet = ignoreChangeSet;
       IncludeSourceCode = includeSourceCode;
     }
 
-    public ChangeSet AsChangeSet ()
+    public IReadOnlyList<MemberNodeBase> GetChangedNodes ()
     {
-      return _changeSetBuilder.Build();
+      return _changedNodes;
     }
 
     public override void VisitAssemblyNode (AssemblyNode node)
@@ -30,9 +31,6 @@ namespace JustAssembly.CommandLineTool
 
       foreach (var module in node.Modules)
         module.Accept (this);
-
-      foreach (var resource in node.Resources)
-        resource.Accept (this);
     }
 
 
@@ -83,23 +81,7 @@ namespace JustAssembly.CommandLineTool
       if (_ignoreChangeSet.Contains (change))
         return;
 
-      _changeSetBuilder.AddChange (change);
-    }
-
-    public override void VisitResourceNode (ResourceNode node)
-    {
-      if (node.DifferenceDecoration == DifferenceDecoration.NoDifferences)
-        return;
-
-      Change change = new ResourceChange (
-          node.Namespace,
-          node.Name,
-          node.DifferenceDecoration);
-
-      if (_ignoreChangeSet.Contains (change))
-        return;
-
-      _changeSetBuilder.AddChange (change);
+      _changedNodes.Add (node);
     }
   }
 }

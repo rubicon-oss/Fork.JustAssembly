@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Xml.Serialization;
+using JustAssembly.CommandLineTool.Nodes;
 using JustAssembly.CommandLineTool.XML;
 using JustAssembly.MergeUtilities;
 using JustAssembly.Nodes;
@@ -68,7 +69,7 @@ namespace JustAssembly.CommandLineTool
             }
 
             var ignoreFile = args.Length > 3 ? args[3] : null;
-            var ignoreChangeSet = new ChangeSet(new Change[0]);
+            IgnoredChangesSet ignoreChangeSet = new IgnoredChangesSet(new ChangeSet(new Change[0]));
             if (ignoreFile != null)
             {
                 if (!FilePathValidater.ValidateOutputFile(ignoreFile))
@@ -82,7 +83,8 @@ namespace JustAssembly.CommandLineTool
                     using (var textReader = File.OpenText (ignoreFile))
                     {
                         var xmlReader = new XmlSerializer (typeof (ChangeSet));
-                        ignoreChangeSet = (ChangeSet) xmlReader.Deserialize (textReader);
+                        var changeSet = (ChangeSet) xmlReader.Deserialize (textReader);
+                        ignoreChangeSet = new IgnoredChangesSet (changeSet);
                     }
 
                 }
@@ -93,13 +95,16 @@ namespace JustAssembly.CommandLineTool
                 }
             }
 
+            var differ = new Differ(ignoreChangeSet, new EmptyFileGenerationNotifier());
+
+            AssemblyNode assemblyNode;
             string xml = string.Empty;
             try
             {
                 var typesMap = new OldToNewTupleMap<string> (oldAssemblyPath, newAssemblyPath);
-
-                var differ = new Differ(ignoreChangeSet, new EmptyFileGenerationNotifier());
-                xml = differ.CreateXMLDiff(typesMap, CancellationToken.None);
+                assemblyNode = differ.CreateAssemblyNode (typesMap);
+                
+                xml = differ.CreateXMLDiff(assemblyNode);
             }
             catch (Exception ex)
             {
@@ -117,6 +122,16 @@ namespace JustAssembly.CommandLineTool
             catch (Exception ex)
             {
                 WriteExceptionAndSetErrorCode("There was a problem while writing output file.", ex);
+                return;
+            }
+
+            try
+            {
+              differ.CreatePatchFile (assemblyNode, Path.ChangeExtension (outputPath, ".patch"));
+            }
+            catch (Exception ex)
+            {
+                WriteExceptionAndSetErrorCode("There was a problem while writing the patch file.", ex);
                 return;
             }
 

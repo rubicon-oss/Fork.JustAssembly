@@ -13,7 +13,7 @@ namespace JustAssembly.CommandLineTool.XML
     [XmlElement ("OldSource")]
     public XmlCDataSection OldSourceCData
     {
-      get { return OldSource == null ? null :new XmlDocument().CreateCDataSection (OldSource); }
+      get { return string.IsNullOrEmpty (OldSource) ? null : new XmlDocument().CreateCDataSection (OldSource); }
       set { OldSource = value.Value; }
     }
 
@@ -23,7 +23,7 @@ namespace JustAssembly.CommandLineTool.XML
     [XmlElement ("NewSource")]
     public XmlCDataSection NewSourceCData
     {
-      get { return NewSource == null ? null : new XmlDocument().CreateCDataSection (NewSource); }
+      get { return string.IsNullOrEmpty (NewSource) ? null : new XmlDocument().CreateCDataSection (NewSource); }
       set { NewSource = value.Value; }
     }
 
@@ -57,8 +57,8 @@ namespace JustAssembly.CommandLineTool.XML
       unchecked
       {
         int hashCode = base.GetHashCode();
-        hashCode = (hashCode * 397) ^ OldSource.GetHashCode();
-        hashCode = (hashCode * 397) ^ NewSource.GetHashCode();
+        hashCode = (hashCode * 397) ^ (OldSource != null ? OldSource.GetHashCode() : 0);
+        hashCode = (hashCode * 397) ^ (NewSource != null ? NewSource.GetHashCode() : 0);
         return hashCode;
       }
     }
