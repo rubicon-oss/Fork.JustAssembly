@@ -38,7 +38,7 @@ namespace JustAssembly.CommandLineTool.Nodes
     }
 
     protected MemberNodeBase (TypeNode parent, IOldToNewTupleMap<MemberDefinitionMetadataBase> map)
-        : base (parent, $"{parent.Namespace}.{parent.Name}", map.GetFirstNotNullItem().GetName())
+        : base (parent, parent.GetNamespaceIncludingName(), map.GetFirstNotNullItem().GetName())
     {
       Map = map;
 
@@ -50,7 +50,7 @@ namespace JustAssembly.CommandLineTool.Nodes
     }
 
     protected MemberNodeBase (NestedTypeNode parent, IOldToNewTupleMap<MemberDefinitionMetadataBase> map)
-        : base (parent, $"{parent.Namespace}.{parent.Name}", map.GetFirstNotNullItem().GetName())
+        : base (parent, parent.GetNamespaceIncludingName(), map.GetFirstNotNullItem().GetName())
     {
       Map = map;
 
@@ -65,7 +65,7 @@ namespace JustAssembly.CommandLineTool.Nodes
     {
       if (metadata == null || result == null)
       {
-        return string.Empty;
+        return null;
       }
 
       IOffsetSpan offsetSpan;
@@ -78,10 +78,10 @@ namespace JustAssembly.CommandLineTool.Nodes
         }
         catch
         {
-          return string.Empty;
+          return null;
         }
       }
-      return string.Empty;
+      return null;
     }
 
     private string GetMemberSource (string sourceCode, IOffsetSpan memberOffset, uint memberId, IDecompilationResults decompilationResult)

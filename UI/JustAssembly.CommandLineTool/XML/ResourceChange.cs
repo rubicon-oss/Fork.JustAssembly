@@ -9,8 +9,8 @@ namespace JustAssembly.CommandLineTool.XML
     {
     }
 
-    public ResourceChange (string name, DifferenceDecoration type)
-        : base (name, type)
+    public ResourceChange (string @namespace, string name, DifferenceDecoration type)
+        : base (@namespace, name, type)
     {
     }
   }

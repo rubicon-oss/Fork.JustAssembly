@@ -8,18 +8,19 @@ namespace JustAssembly.CommandLineTool
 {
   internal class ChangeSetNodeVisitor : NodeVisitorBase
   {
-    private readonly List<Change> _changes = new List<Change>();
+    private readonly ChangeSetBuilder _changeSetBuilder;
 
     public bool IncludeSourceCode { get; }
 
-    public ChangeSetNodeVisitor (bool includeSourceCode)
+    public ChangeSetNodeVisitor (ChangeSet ignoreChangeSet, bool includeSourceCode)
     {
+      _changeSetBuilder = new ChangeSetBuilder (ignoreChangeSet);
       IncludeSourceCode = includeSourceCode;
     }
 
     public ChangeSet AsChangeSet ()
     {
-      return new ChangeSet (_changes.ToArray());
+      return _changeSetBuilder.Build();
     }
 
     public override void VisitAssemblyNode (AssemblyNode node)
@@ -76,7 +77,7 @@ namespace JustAssembly.CommandLineTool
           IncludeSourceCode ? node.OldSource : null,
           IncludeSourceCode ? node.NewSource : null);
 
-      _changes.Add (change);
+      _changeSetBuilder.AddChange (change);
     }
 
     public override void VisitResourceNode (ResourceNode node)
@@ -85,10 +86,11 @@ namespace JustAssembly.CommandLineTool
         return;
 
       Change change = new ResourceChange (
+          node.Namespace,
           node.Name,
           node.DifferenceDecoration);
 
-      _changes.Add (change);
+      _changeSetBuilder.AddChange (change);
     }
   }
 }

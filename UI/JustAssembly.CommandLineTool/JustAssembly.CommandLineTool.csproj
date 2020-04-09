@@ -134,6 +134,7 @@
     <Compile Include="..\JustAssembly\Nodes\DifferenceDecoration.cs">
       <Link>Nodes\DifferenceDecoration.cs</Link>
     </Compile>
+    <Compile Include="ChangeSetBuilder.cs" />
     <Compile Include="DecompilationResultsRepository.cs" />
     <Compile Include="Differ.cs" />
     <Compile Include="EmptyFileGenerationNotifier.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Nodes\NamespaceNode.cs" />
     <Compile Include="Nodes\NestedTypeNode.cs" />
     <Compile Include="Nodes\NodeBase.cs" />
+    <Compile Include="Nodes\NodeExtensions.cs" />
     <Compile Include="Nodes\ResourceNode.cs" />
     <Compile Include="Nodes\TypeNode.cs" />
     <Compile Include="NodeVisitorBase.cs" />

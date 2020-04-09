@@ -14,10 +14,12 @@ namespace JustAssembly.CommandLineTool
 {
   public class Differ
   {
+    private readonly ChangeSet ignoreChangeSet;
     private readonly IFileGenerationNotifier progressNotifier;
 
-    public Differ (IFileGenerationNotifier progressNotifier)
+    public Differ (ChangeSet ignoreChangeSet, IFileGenerationNotifier progressNotifier)
     {
+      this.ignoreChangeSet = ignoreChangeSet;
       this.progressNotifier = progressNotifier;
     }
 
@@ -49,7 +51,7 @@ namespace JustAssembly.CommandLineTool
 
         var assemblyNode = AssemblyNode.Create (assemblyMap, generationProjectInfoMap);
 
-        var visitor = new ChangeSetNodeVisitor (true);
+        var visitor = new ChangeSetNodeVisitor (ignoreChangeSet, true);
         visitor.VisitAssemblyNode (assemblyNode);
 
         var changeSet = visitor.AsChangeSet();

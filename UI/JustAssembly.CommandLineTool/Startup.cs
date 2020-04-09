@@ -2,9 +2,13 @@
 using JustAssembly.Core;
 using JustAssembly.Infrastructure.Analytics;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Xml.Serialization;
+using JustAssembly.CommandLineTool.XML;
 using JustAssembly.MergeUtilities;
+using JustAssembly.Nodes;
 
 namespace JustAssembly.CommandLineTool
 {
@@ -36,28 +40,57 @@ namespace JustAssembly.CommandLineTool
 
         private static void RunMain(string[] args)
         {
-            if (args.Length != 3)
+            if (args.Length < 3 || args.Length > 4)
             {
-                WriteErrorAndSetErrorCode("Wrong number of arguments." + Environment.NewLine + Environment.NewLine + "Sample:" + Environment.NewLine + "justassembly.commandlinetool Path\\To\\Assembly1 Path\\To\\Assembly2 Path\\To\\XMLOutput");
+                WriteErrorAndSetErrorCode("Wrong number of arguments." + Environment.NewLine + Environment.NewLine + "Sample:" + Environment.NewLine + "justassembly.commandlinetool Path\\To\\Assembly1 Path\\To\\Assembly2 Path\\To\\XMLOutput [Path\\To\\IgnoreXML]");
                 return;
             }
 
-            if (!FilePathValidater.ValidateInputFile(args[0]))
+            var oldAssemblyPath = args[0];
+            if (!FilePathValidater.ValidateInputFile(oldAssemblyPath))
             {
                 WriteErrorAndSetErrorCode("First assembly path is in incorrect format or file not found.");
                 return;
             }
 
-            if (!FilePathValidater.ValidateInputFile(args[1]))
+            var newAssemblyPath = args[1];
+            if (!FilePathValidater.ValidateInputFile(newAssemblyPath))
             {
                 WriteErrorAndSetErrorCode("Second assembly path is in incorrect format or file not found.");
                 return;
             }
 
-            if (!FilePathValidater.ValidateOutputFile(args[2]))
+            var outputPath = args[2];
+            if (!FilePathValidater.ValidateOutputFile(outputPath))
             {
                 WriteErrorAndSetErrorCode("Output file path is in incorrect format.");
                 return;
+            }
+
+            var ignoreFile = args.Length > 3 ? args[3] : null;
+            var ignoreChangeSet = new ChangeSet(new Change[0]);
+            if (ignoreFile != null)
+            {
+                if (!FilePathValidater.ValidateOutputFile(ignoreFile))
+                {
+                    WriteErrorAndSetErrorCode("Ignore file path is in incorrect format.");
+                    return;
+                }
+
+                try
+                {
+                    using (var textReader = File.OpenText (ignoreFile))
+                    {
+                        var xmlReader = new XmlSerializer (typeof (ChangeSet));
+                        ignoreChangeSet = (ChangeSet) xmlReader.Deserialize (textReader);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    WriteExceptionAndSetErrorCode("A problem occurred while parsing the ignore file.", ex);
+                    return;
+                }
             }
 
             string xml = string.Empty;
@@ -65,7 +98,7 @@ namespace JustAssembly.CommandLineTool
             {
                 var typesMap = new OldToNewTupleMap<string> (oldAssemblyPath, newAssemblyPath);
 
-                var differ = new Differ(new EmptyFileGenerationNotifier());
+                var differ = new Differ(ignoreChangeSet, new EmptyFileGenerationNotifier());
                 xml = differ.CreateXMLDiff(typesMap, CancellationToken.None);
             }
             catch (Exception ex)
@@ -76,7 +109,7 @@ namespace JustAssembly.CommandLineTool
 
             try
             {
-                using (StreamWriter writer = new StreamWriter(args[2]))
+                using (StreamWriter writer = new StreamWriter(outputPath))
                 {
                     writer.Write(xml);
                 }
