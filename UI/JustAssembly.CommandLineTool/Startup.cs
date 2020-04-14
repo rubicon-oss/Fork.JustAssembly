@@ -127,7 +127,10 @@ namespace JustAssembly.CommandLineTool
 
             try
             {
-              differ.CreatePatchFile (assemblyNode, Path.ChangeExtension (outputPath, ".patch"));
+              differ.CreatePatchFileAndSources (
+                  assemblyNode, 
+                  Path.ChangeExtension (outputPath, ".patch"),
+                  Path.ChangeExtension (outputPath, ".zip"));
             }
             catch (Exception ex)
             {

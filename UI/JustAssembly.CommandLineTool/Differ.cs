@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Threading;
 using System.Xml.Serialization;
 using JustAssembly.CommandLineTool.Nodes;
@@ -74,7 +75,7 @@ namespace JustAssembly.CommandLineTool
       }
     }
 
-    public void CreatePatchFile (AssemblyNode assemblyNode, string outputPath)
+    public void CreatePatchFileAndSources (AssemblyNode assemblyNode, string patchFilePath, string sourcesPath)
     {
       try
       {
@@ -118,6 +119,9 @@ namespace JustAssembly.CommandLineTool
           }
         }
 
+        File.Delete (sourcesPath);
+        ZipFile.CreateFromDirectory (tempFolder, sourcesPath);
+
         var processStartInfo = new ProcessStartInfo ("git.exe");
         processStartInfo.CreateNoWindow = true;
         processStartInfo.FileName = "cmd.exe";
@@ -127,8 +131,8 @@ namespace JustAssembly.CommandLineTool
         var process = Process.Start (processStartInfo);
         process.WaitForExit();
 
-        File.Delete (outputPath);
-        File.Move (Path.Combine (tempFolder, "out.patch"), outputPath);
+        File.Delete (patchFilePath);
+        File.Move (Path.Combine (tempFolder, "out.patch"), patchFilePath);
 
         try
         {
@@ -169,7 +173,7 @@ namespace JustAssembly.CommandLineTool
       if (name.Length > 50)
         name = name.Substring (0, 50);
 
-      var unsanitizedPath = $"{ns}__{name}__{Path.GetRandomFileName()}";
+      var unsanitizedPath = $"{ns}__{name}__{Path.GetRandomFileName()}.cs";
       return string.Join ("_", unsanitizedPath.Split (Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
     }
   }
