@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -27,7 +28,7 @@ namespace JustAssembly.Minidiffer
         {
           var xmlReader = new XmlSerializer (typeof (ChangeSet));
           var changeSet = (ChangeSet) xmlReader.Deserialize (textReader);
-          LoadChangeSet (changeSet);
+          LoadChangeSet (changeSet, loadOrderedCheckbox.Checked);
         }
       }
       catch (Exception ex)
@@ -40,14 +41,18 @@ namespace JustAssembly.Minidiffer
       }
     }
 
-    private void LoadChangeSet (ChangeSet changeSet)
+    private void LoadChangeSet (ChangeSet changeSet, bool ordered)
     {
       changesListBox.Items.Clear();
       ignoredChangesListBox.Items.Clear();
       doneListBox.Items.Clear();
 
+      var changes = ordered
+          ? changeSet.MemberChanges.Where (e => e is MemberChange).OrderBy (e => $"{e.Namespace}__{e.Name}")
+          : changeSet.MemberChanges.Where (e => e is MemberChange);
+
       var index = 0;
-      foreach (var change in changeSet.MemberChanges.Where (e => e is MemberChange).OrderBy (e => $"{e.Namespace}__{e.Name}"))
+      foreach (var change in changes)
       {
         var changeEntry = new ChangeEntry (index++, change);
         changesListBox.Items.Add (changeEntry);

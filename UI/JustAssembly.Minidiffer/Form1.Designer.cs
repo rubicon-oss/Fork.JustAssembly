@@ -47,6 +47,7 @@
       this.label1 = new System.Windows.Forms.Label();
       this.includeNewSourceCheckbox = new System.Windows.Forms.CheckBox();
       this.includeOldSourceCheckbox = new System.Windows.Forms.CheckBox();
+      this.loadOrderedCheckbox = new System.Windows.Forms.CheckBox();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -81,6 +82,7 @@
       this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel1.Controls.Add(this.loadOrderedCheckbox);
       this.panel1.Controls.Add(this.includeOldSourceCheckbox);
       this.panel1.Controls.Add(this.includeNewSourceCheckbox);
       this.panel1.Controls.Add(this.markAllIgnoredButton);
@@ -249,6 +251,18 @@
       this.includeOldSourceCheckbox.Text = "Include old source";
       this.includeOldSourceCheckbox.UseVisualStyleBackColor = true;
       // 
+      // loadOrderedCheckbox
+      // 
+      this.loadOrderedCheckbox.AutoSize = true;
+      this.loadOrderedCheckbox.Checked = true;
+      this.loadOrderedCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.loadOrderedCheckbox.Location = new System.Drawing.Point(409, 7);
+      this.loadOrderedCheckbox.Name = "loadOrderedCheckbox";
+      this.loadOrderedCheckbox.Size = new System.Drawing.Size(133, 17);
+      this.loadOrderedCheckbox.TabIndex = 15;
+      this.loadOrderedCheckbox.Text = "Load changes ordered";
+      this.loadOrderedCheckbox.UseVisualStyleBackColor = true;
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -285,6 +299,7 @@
     private System.Windows.Forms.ListBox doneListBox;
     private System.Windows.Forms.CheckBox includeOldSourceCheckbox;
     private System.Windows.Forms.CheckBox includeNewSourceCheckbox;
+    private System.Windows.Forms.CheckBox loadOrderedCheckbox;
   }
 }
 
