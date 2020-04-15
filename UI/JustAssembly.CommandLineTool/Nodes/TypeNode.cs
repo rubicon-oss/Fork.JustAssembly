@@ -109,11 +109,11 @@ namespace JustAssembly.CommandLineTool.Nodes
     /// <inheritdoc />
     public override DifferenceDecoration GetDifferenceDecoration ()
     {
-      if (Map.OldType == null)
+      if (Map.OldType == null || OldDecompileResult == null && NewDecompileResult != null)
       {
         return DifferenceDecoration.Added;
       }
-      if (Map.NewType == null)
+      if (Map.NewType == null || OldDecompileResult != null && NewDecompileResult == null)
       {
         return DifferenceDecoration.Deleted;
       }
