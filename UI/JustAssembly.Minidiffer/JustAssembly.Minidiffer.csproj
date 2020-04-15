@@ -57,6 +57,9 @@
     <Compile Include="..\JustAssembly.CommandLineTool\XML\ResourceChange.cs">
       <Link>XML\ResourceChange.cs</Link>
     </Compile>
+    <Compile Include="..\JustAssembly.CommandLineTool\XML\SourceText.cs">
+      <Link>XML\SourceText.cs</Link>
+    </Compile>
     <Compile Include="ChangeEntry.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
