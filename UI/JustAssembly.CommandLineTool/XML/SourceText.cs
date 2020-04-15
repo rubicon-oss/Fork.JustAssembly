@@ -31,6 +31,11 @@ namespace JustAssembly.CommandLineTool.XML
       Hash = hash;
     }
 
+    public SourceText Clone ()
+    {
+      return new SourceText (Text, Hash);
+    }
+
     public static bool operator == (SourceText left, SourceText right)
     {
       if (ReferenceEquals (left, right))

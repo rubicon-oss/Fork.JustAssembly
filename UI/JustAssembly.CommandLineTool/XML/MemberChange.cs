@@ -29,6 +29,17 @@ namespace JustAssembly.CommandLineTool.XML
       return base.Equals (other) && OldSource == other.OldSource && NewSource == other.NewSource;
     }
 
+    /// <inheritdoc />
+    public override Change Clone ()
+    {
+      return new MemberChange (
+          Namespace,
+          Name,
+          Type,
+          OldSource?.Clone(),
+          NewSource?.Clone());
+    }
+
     public override bool Equals (object obj)
     {
       if (ReferenceEquals (null, obj)) return false;

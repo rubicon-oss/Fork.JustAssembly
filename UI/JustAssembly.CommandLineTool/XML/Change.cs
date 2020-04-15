@@ -26,6 +26,8 @@ namespace JustAssembly.CommandLineTool.XML
       Type = type;
     }
 
+    public abstract Change Clone ();
+
     protected bool Equals (Change other)
     {
       return string.Equals (Name, other.Name) && Type == other.Type && string.Equals (Namespace, other.Namespace);

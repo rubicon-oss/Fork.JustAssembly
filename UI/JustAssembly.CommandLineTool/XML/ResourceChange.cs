@@ -13,5 +13,14 @@ namespace JustAssembly.CommandLineTool.XML
         : base (@namespace, name, type)
     {
     }
+
+    /// <inheritdoc />
+    public override Change Clone ()
+    {
+      return new ResourceChange (
+          Namespace,
+          Name,
+          Type);
+    }
   }
 }

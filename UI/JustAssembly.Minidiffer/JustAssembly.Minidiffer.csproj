@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\JustAssembly.CommandLineTool\Utility\ShaUtility.cs">
+      <Link>Utility\ShaUtility.cs</Link>
+    </Compile>
     <Compile Include="..\JustAssembly.CommandLineTool\XML\Change.cs">
       <Link>XML\Change.cs</Link>
     </Compile>

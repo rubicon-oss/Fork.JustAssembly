@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using JustAssembly.CommandLineTool.Utility;
 using JustAssembly.CommandLineTool.XML;
 
 namespace JustAssembly.Minidiffer
@@ -123,6 +125,44 @@ namespace JustAssembly.Minidiffer
 
       if (changes.Length == 0)
         return;
+
+      var includeOld = includeOldSourceCheckbox.Checked;
+      var includeNew = includeNewSourceCheckbox.Checked;
+
+      if (!includeOld || !includeNew)
+      {
+        using (var shaUtility = new ShaUtility(SHA256.Create()))
+        {
+          changes = changes.Select (
+              e =>
+              {
+                if (!(e is MemberChange))
+                  return e;
+
+                var memberChange = (MemberChange) e.Clone();
+
+                var oldSource = memberChange.OldSource;
+                if (!includeOld && oldSource != null)
+                {
+                  if (oldSource.Hash == null)
+                    oldSource.Hash = shaUtility.ComputeHashAsString (oldSource.Text);
+
+                  oldSource.Text = null;
+                }
+
+                var newSource = memberChange.NewSource;
+                if (!includeNew && newSource != null)
+                {
+                  if (newSource.Hash == null)
+                    newSource.Hash = shaUtility.ComputeHashAsString (newSource.Text);
+
+                  newSource.Text = null;
+                }
+
+                return memberChange;
+              }).ToArray();
+        }
+      }
 
       var changeSet = new ChangeSet (changes);
       var xmlSerializer = new XmlSerializer (typeof (ChangeSet));
