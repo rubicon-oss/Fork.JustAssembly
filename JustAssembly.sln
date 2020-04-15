@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustAssembly.Infrastructure
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemInformationHelpers", "JustDecompileEngine\SystemInformationHelpers\SystemInformationHelpers.csproj", "{CED63F54-9464-4CC0-9F3F-D42014C85AC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustAssembly.Minidiffer", "UI\JustAssembly.Minidiffer\JustAssembly.Minidiffer.csproj", "{CD125F7C-CCFC-4724-96AA-939B844C213B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,6 +172,12 @@ Global
 		{CED63F54-9464-4CC0-9F3F-D42014C85AC6}.Release|Any CPU.Build.0 = Release JustAssembly|Any CPU
 		{CED63F54-9464-4CC0-9F3F-D42014C85AC6}.Telerik Release Build|Any CPU.ActiveCfg = Release Server JustAssembly|Any CPU
 		{CED63F54-9464-4CC0-9F3F-D42014C85AC6}.Telerik Release Build|Any CPU.Build.0 = Release Server JustAssembly|Any CPU
+		{CD125F7C-CCFC-4724-96AA-939B844C213B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD125F7C-CCFC-4724-96AA-939B844C213B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD125F7C-CCFC-4724-96AA-939B844C213B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD125F7C-CCFC-4724-96AA-939B844C213B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD125F7C-CCFC-4724-96AA-939B844C213B}.Telerik Release Build|Any CPU.ActiveCfg = Release|Any CPU
+		{CD125F7C-CCFC-4724-96AA-939B844C213B}.Telerik Release Build|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -196,5 +204,6 @@ Global
 		{C6D6187D-CB83-40A1-A3F6-20FB9231D67B} = {F9550310-3D00-4134-9155-2C56F58EF1DB}
 		{5F05C639-2A66-4411-AB69-5F7DC2C55FAA} = {F9550310-3D00-4134-9155-2C56F58EF1DB}
 		{CED63F54-9464-4CC0-9F3F-D42014C85AC6} = {80435433-1C6C-4744-BDFA-62CA071DDB63}
+		{CD125F7C-CCFC-4724-96AA-939B844C213B} = {F9550310-3D00-4134-9155-2C56F58EF1DB}
 	EndGlobalSection
 EndGlobal
