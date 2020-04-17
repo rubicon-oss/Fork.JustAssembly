@@ -49,6 +49,8 @@
       this.ignoredChangesListBox = new System.Windows.Forms.ListBox();
       this.label1 = new System.Windows.Forms.Label();
       this.markAllCompletedButton = new System.Windows.Forms.Button();
+      this.completePendingButton = new System.Windows.Forms.Button();
+      this.pendCompletedButton = new System.Windows.Forms.Button();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -83,6 +85,8 @@
       this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel1.Controls.Add(this.pendCompletedButton);
+      this.panel1.Controls.Add(this.completePendingButton);
       this.panel1.Controls.Add(this.markAllCompletedButton);
       this.panel1.Controls.Add(this.loadOrderedCheckbox);
       this.panel1.Controls.Add(this.includeOldSourceCheckbox);
@@ -165,18 +169,18 @@
       // undoneButton
       // 
       this.undoneButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.undoneButton.Location = new System.Drawing.Point(339, 481);
+      this.undoneButton.Location = new System.Drawing.Point(299, 481);
       this.undoneButton.Name = "undoneButton";
       this.undoneButton.Size = new System.Drawing.Size(75, 23);
       this.undoneButton.TabIndex = 11;
-      this.undoneButton.Text = "undone /\\";
+      this.undoneButton.Text = "ignore /\\";
       this.undoneButton.UseVisualStyleBackColor = true;
       this.undoneButton.Click += new System.EventHandler(this.undoneButton_Click);
       // 
       // doneButton
       // 
       this.doneButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.doneButton.Location = new System.Drawing.Point(258, 481);
+      this.doneButton.Location = new System.Drawing.Point(218, 481);
       this.doneButton.Name = "doneButton";
       this.doneButton.Size = new System.Drawing.Size(75, 23);
       this.doneButton.TabIndex = 10;
@@ -217,7 +221,7 @@
       // unignoreButton
       // 
       this.unignoreButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.unignoreButton.Location = new System.Drawing.Point(339, 243);
+      this.unignoreButton.Location = new System.Drawing.Point(380, 243);
       this.unignoreButton.Name = "unignoreButton";
       this.unignoreButton.Size = new System.Drawing.Size(75, 23);
       this.unignoreButton.TabIndex = 6;
@@ -228,7 +232,7 @@
       // ignoreButton
       // 
       this.ignoreButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.ignoreButton.Location = new System.Drawing.Point(258, 243);
+      this.ignoreButton.Location = new System.Drawing.Point(299, 243);
       this.ignoreButton.Name = "ignoreButton";
       this.ignoreButton.Size = new System.Drawing.Size(75, 23);
       this.ignoreButton.TabIndex = 5;
@@ -275,6 +279,28 @@
       this.markAllCompletedButton.UseVisualStyleBackColor = true;
       this.markAllCompletedButton.Click += new System.EventHandler(this.markAllCompletedButton_Click);
       // 
+      // completePendingButton
+      // 
+      this.completePendingButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.completePendingButton.Location = new System.Drawing.Point(218, 243);
+      this.completePendingButton.Name = "completePendingButton";
+      this.completePendingButton.Size = new System.Drawing.Size(75, 23);
+      this.completePendingButton.TabIndex = 17;
+      this.completePendingButton.Text = "\\/ complete";
+      this.completePendingButton.UseVisualStyleBackColor = true;
+      this.completePendingButton.Click += new System.EventHandler(this.completePendingButton_Click);
+      // 
+      // pendCompletedButton
+      // 
+      this.pendCompletedButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.pendCompletedButton.Location = new System.Drawing.Point(380, 481);
+      this.pendCompletedButton.Name = "pendCompletedButton";
+      this.pendCompletedButton.Size = new System.Drawing.Size(75, 23);
+      this.pendCompletedButton.TabIndex = 18;
+      this.pendCompletedButton.Text = "pending /\\";
+      this.pendCompletedButton.UseVisualStyleBackColor = true;
+      this.pendCompletedButton.Click += new System.EventHandler(this.pendCompletedButton_Click);
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -313,6 +339,8 @@
     private System.Windows.Forms.CheckBox includeNewSourceCheckbox;
     private System.Windows.Forms.CheckBox loadOrderedCheckbox;
     private System.Windows.Forms.Button markAllCompletedButton;
+    private System.Windows.Forms.Button pendCompletedButton;
+    private System.Windows.Forms.Button completePendingButton;
   }
 }
 

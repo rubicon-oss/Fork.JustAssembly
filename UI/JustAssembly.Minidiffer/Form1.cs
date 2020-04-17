@@ -204,5 +204,25 @@ namespace JustAssembly.Minidiffer
       for (var i = 0; i < listBox.Items.Count; i++)
         listBox.SetSelected (i, state);
     }
+
+    private void pendCompletedButton_Click (object sender, EventArgs e)
+    {
+      var changes = doneListBox.SelectedItems.Cast<ChangeEntry>().ToArray();
+      foreach (var entry in changes)
+      {
+        doneListBox.Items.Remove (entry);
+        InsertAtCorrectPosition (changesListBox, entry);
+      }
+    }
+
+    private void completePendingButton_Click (object sender, EventArgs e)
+    {
+      var changes = changesListBox.SelectedItems.Cast<ChangeEntry>().ToArray();
+      foreach (var entry in changes)
+      {
+        changesListBox.Items.Remove (entry);
+        InsertAtCorrectPosition (doneListBox, entry);
+      }
+    }
   }
 }
