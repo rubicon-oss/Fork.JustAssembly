@@ -33,6 +33,9 @@
       this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
       this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.loadOrderedCheckbox = new System.Windows.Forms.CheckBox();
+      this.includeOldSourceCheckbox = new System.Windows.Forms.CheckBox();
+      this.includeNewSourceCheckbox = new System.Windows.Forms.CheckBox();
       this.markAllIgnoredButton = new System.Windows.Forms.Button();
       this.markAllDoneButton = new System.Windows.Forms.Button();
       this.undoneButton = new System.Windows.Forms.Button();
@@ -45,15 +48,13 @@
       this.label2 = new System.Windows.Forms.Label();
       this.ignoredChangesListBox = new System.Windows.Forms.ListBox();
       this.label1 = new System.Windows.Forms.Label();
-      this.includeNewSourceCheckbox = new System.Windows.Forms.CheckBox();
-      this.includeOldSourceCheckbox = new System.Windows.Forms.CheckBox();
-      this.loadOrderedCheckbox = new System.Windows.Forms.CheckBox();
+      this.markAllCompletedButton = new System.Windows.Forms.Button();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // button1
       // 
-      this.button1.Location = new System.Drawing.Point(548, 3);
+      this.button1.Location = new System.Drawing.Point(417, 3);
       this.button1.Name = "button1";
       this.button1.Size = new System.Drawing.Size(125, 23);
       this.button1.TabIndex = 0;
@@ -82,6 +83,7 @@
       this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel1.Controls.Add(this.markAllCompletedButton);
       this.panel1.Controls.Add(this.loadOrderedCheckbox);
       this.panel1.Controls.Add(this.includeOldSourceCheckbox);
       this.panel1.Controls.Add(this.includeNewSourceCheckbox);
@@ -103,6 +105,42 @@
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(673, 702);
       this.panel1.TabIndex = 2;
+      // 
+      // loadOrderedCheckbox
+      // 
+      this.loadOrderedCheckbox.AutoSize = true;
+      this.loadOrderedCheckbox.Checked = true;
+      this.loadOrderedCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.loadOrderedCheckbox.Location = new System.Drawing.Point(278, 7);
+      this.loadOrderedCheckbox.Name = "loadOrderedCheckbox";
+      this.loadOrderedCheckbox.Size = new System.Drawing.Size(133, 17);
+      this.loadOrderedCheckbox.TabIndex = 15;
+      this.loadOrderedCheckbox.Text = "Load changes ordered";
+      this.loadOrderedCheckbox.UseVisualStyleBackColor = true;
+      // 
+      // includeOldSourceCheckbox
+      // 
+      this.includeOldSourceCheckbox.AutoSize = true;
+      this.includeOldSourceCheckbox.Checked = true;
+      this.includeOldSourceCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.includeOldSourceCheckbox.Location = new System.Drawing.Point(173, 279);
+      this.includeOldSourceCheckbox.Name = "includeOldSourceCheckbox";
+      this.includeOldSourceCheckbox.Size = new System.Drawing.Size(113, 17);
+      this.includeOldSourceCheckbox.TabIndex = 15;
+      this.includeOldSourceCheckbox.Text = "Include old source";
+      this.includeOldSourceCheckbox.UseVisualStyleBackColor = true;
+      // 
+      // includeNewSourceCheckbox
+      // 
+      this.includeNewSourceCheckbox.AutoSize = true;
+      this.includeNewSourceCheckbox.Checked = true;
+      this.includeNewSourceCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.includeNewSourceCheckbox.Location = new System.Drawing.Point(292, 279);
+      this.includeNewSourceCheckbox.Name = "includeNewSourceCheckbox";
+      this.includeNewSourceCheckbox.Size = new System.Drawing.Size(119, 17);
+      this.includeNewSourceCheckbox.TabIndex = 14;
+      this.includeNewSourceCheckbox.Text = "Include new source";
+      this.includeNewSourceCheckbox.UseVisualStyleBackColor = true;
       // 
       // markAllIgnoredButton
       // 
@@ -151,9 +189,9 @@
       this.label3.AutoSize = true;
       this.label3.Location = new System.Drawing.Point(3, 518);
       this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(77, 13);
+      this.label3.Size = new System.Drawing.Size(101, 13);
       this.label3.TabIndex = 9;
-      this.label3.Text = "Done changes";
+      this.label3.Text = "Completed changes";
       // 
       // doneListBox
       // 
@@ -223,45 +261,19 @@
       this.label1.AutoSize = true;
       this.label1.Location = new System.Drawing.Point(3, 8);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(49, 13);
+      this.label1.Size = new System.Drawing.Size(90, 13);
       this.label1.TabIndex = 2;
-      this.label1.Text = "Changes";
+      this.label1.Text = "Pending changes";
       // 
-      // includeNewSourceCheckbox
+      // markAllCompletedButton
       // 
-      this.includeNewSourceCheckbox.AutoSize = true;
-      this.includeNewSourceCheckbox.Checked = true;
-      this.includeNewSourceCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.includeNewSourceCheckbox.Location = new System.Drawing.Point(292, 279);
-      this.includeNewSourceCheckbox.Name = "includeNewSourceCheckbox";
-      this.includeNewSourceCheckbox.Size = new System.Drawing.Size(119, 17);
-      this.includeNewSourceCheckbox.TabIndex = 14;
-      this.includeNewSourceCheckbox.Text = "Include new source";
-      this.includeNewSourceCheckbox.UseVisualStyleBackColor = true;
-      // 
-      // includeOldSourceCheckbox
-      // 
-      this.includeOldSourceCheckbox.AutoSize = true;
-      this.includeOldSourceCheckbox.Checked = true;
-      this.includeOldSourceCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.includeOldSourceCheckbox.Location = new System.Drawing.Point(173, 279);
-      this.includeOldSourceCheckbox.Name = "includeOldSourceCheckbox";
-      this.includeOldSourceCheckbox.Size = new System.Drawing.Size(113, 17);
-      this.includeOldSourceCheckbox.TabIndex = 15;
-      this.includeOldSourceCheckbox.Text = "Include old source";
-      this.includeOldSourceCheckbox.UseVisualStyleBackColor = true;
-      // 
-      // loadOrderedCheckbox
-      // 
-      this.loadOrderedCheckbox.AutoSize = true;
-      this.loadOrderedCheckbox.Checked = true;
-      this.loadOrderedCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.loadOrderedCheckbox.Location = new System.Drawing.Point(409, 7);
-      this.loadOrderedCheckbox.Name = "loadOrderedCheckbox";
-      this.loadOrderedCheckbox.Size = new System.Drawing.Size(133, 17);
-      this.loadOrderedCheckbox.TabIndex = 15;
-      this.loadOrderedCheckbox.Text = "Load changes ordered";
-      this.loadOrderedCheckbox.UseVisualStyleBackColor = true;
+      this.markAllCompletedButton.Location = new System.Drawing.Point(548, 3);
+      this.markAllCompletedButton.Name = "markAllCompletedButton";
+      this.markAllCompletedButton.Size = new System.Drawing.Size(125, 23);
+      this.markAllCompletedButton.TabIndex = 16;
+      this.markAllCompletedButton.Text = "Mark all";
+      this.markAllCompletedButton.UseVisualStyleBackColor = true;
+      this.markAllCompletedButton.Click += new System.EventHandler(this.markAllCompletedButton_Click);
       // 
       // Form1
       // 
@@ -300,6 +312,7 @@
     private System.Windows.Forms.CheckBox includeOldSourceCheckbox;
     private System.Windows.Forms.CheckBox includeNewSourceCheckbox;
     private System.Windows.Forms.CheckBox loadOrderedCheckbox;
+    private System.Windows.Forms.Button markAllCompletedButton;
   }
 }
 

@@ -194,6 +194,11 @@ namespace JustAssembly.Minidiffer
       SelectAllItems(doneListBox, true);
     }
 
+    private void markAllCompletedButton_Click (object sender, EventArgs e)
+    {
+      SelectAllItems(changesListBox, true);
+    }
+
     private void SelectAllItems (ListBox listBox, bool state)
     {
       for (var i = 0; i < listBox.Items.Count; i++)
