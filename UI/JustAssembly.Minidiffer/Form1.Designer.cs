@@ -29,28 +29,28 @@
     private void InitializeComponent ()
     {
       this.button1 = new System.Windows.Forms.Button();
-      this.changesListBox = new System.Windows.Forms.ListBox();
+      this.PendingChangesListBox = new System.Windows.Forms.ListBox();
       this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
       this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.PendCompletedChangeButton = new System.Windows.Forms.Button();
+      this.CompletePendingChangeButton = new System.Windows.Forms.Button();
+      this.MarkAllPendingChangesButton = new System.Windows.Forms.Button();
       this.loadOrderedCheckbox = new System.Windows.Forms.CheckBox();
       this.includeOldSourceCheckbox = new System.Windows.Forms.CheckBox();
       this.includeNewSourceCheckbox = new System.Windows.Forms.CheckBox();
-      this.markAllIgnoredButton = new System.Windows.Forms.Button();
-      this.markAllDoneButton = new System.Windows.Forms.Button();
-      this.undoneButton = new System.Windows.Forms.Button();
-      this.doneButton = new System.Windows.Forms.Button();
+      this.MarkAllIgnoredChangesButton = new System.Windows.Forms.Button();
+      this.MarkAllCompletedChangesButton = new System.Windows.Forms.Button();
+      this.IgnoreCompletedChangeButton = new System.Windows.Forms.Button();
+      this.CompleteIgnoredChangeButton = new System.Windows.Forms.Button();
       this.label3 = new System.Windows.Forms.Label();
-      this.doneListBox = new System.Windows.Forms.ListBox();
+      this.CompletedListBox = new System.Windows.Forms.ListBox();
       this.copyAsXmlButton = new System.Windows.Forms.Button();
-      this.unignoreButton = new System.Windows.Forms.Button();
-      this.ignoreButton = new System.Windows.Forms.Button();
+      this.PendIgnoredChangeButton = new System.Windows.Forms.Button();
+      this.IgnorePendingChangesButton = new System.Windows.Forms.Button();
       this.label2 = new System.Windows.Forms.Label();
-      this.ignoredChangesListBox = new System.Windows.Forms.ListBox();
+      this.IgnoredChangesListBox = new System.Windows.Forms.ListBox();
       this.label1 = new System.Windows.Forms.Label();
-      this.markAllCompletedButton = new System.Windows.Forms.Button();
-      this.completePendingButton = new System.Windows.Forms.Button();
-      this.pendCompletedButton = new System.Windows.Forms.Button();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -62,18 +62,18 @@
       this.button1.TabIndex = 0;
       this.button1.Text = "Open change set";
       this.button1.UseVisualStyleBackColor = true;
-      this.button1.Click += new System.EventHandler(this.button1_Click);
+      this.button1.Click += new System.EventHandler(this.OpenChangeSetFromDisk);
       // 
-      // changesListBox
+      // PendingChangesListBox
       // 
-      this.changesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.PendingChangesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.changesListBox.FormattingEnabled = true;
-      this.changesListBox.Location = new System.Drawing.Point(0, 32);
-      this.changesListBox.Name = "changesListBox";
-      this.changesListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-      this.changesListBox.Size = new System.Drawing.Size(673, 199);
-      this.changesListBox.TabIndex = 1;
+      this.PendingChangesListBox.FormattingEnabled = true;
+      this.PendingChangesListBox.Location = new System.Drawing.Point(0, 32);
+      this.PendingChangesListBox.Name = "PendingChangesListBox";
+      this.PendingChangesListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+      this.PendingChangesListBox.Size = new System.Drawing.Size(673, 199);
+      this.PendingChangesListBox.TabIndex = 1;
       // 
       // openFileDialog1
       // 
@@ -85,30 +85,62 @@
       this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.panel1.Controls.Add(this.pendCompletedButton);
-      this.panel1.Controls.Add(this.completePendingButton);
-      this.panel1.Controls.Add(this.markAllCompletedButton);
+      this.panel1.Controls.Add(this.PendCompletedChangeButton);
+      this.panel1.Controls.Add(this.CompletePendingChangeButton);
+      this.panel1.Controls.Add(this.MarkAllPendingChangesButton);
       this.panel1.Controls.Add(this.loadOrderedCheckbox);
       this.panel1.Controls.Add(this.includeOldSourceCheckbox);
       this.panel1.Controls.Add(this.includeNewSourceCheckbox);
-      this.panel1.Controls.Add(this.markAllIgnoredButton);
-      this.panel1.Controls.Add(this.markAllDoneButton);
-      this.panel1.Controls.Add(this.undoneButton);
-      this.panel1.Controls.Add(this.doneButton);
+      this.panel1.Controls.Add(this.MarkAllIgnoredChangesButton);
+      this.panel1.Controls.Add(this.MarkAllCompletedChangesButton);
+      this.panel1.Controls.Add(this.IgnoreCompletedChangeButton);
+      this.panel1.Controls.Add(this.CompleteIgnoredChangeButton);
       this.panel1.Controls.Add(this.label3);
-      this.panel1.Controls.Add(this.doneListBox);
+      this.panel1.Controls.Add(this.CompletedListBox);
       this.panel1.Controls.Add(this.copyAsXmlButton);
-      this.panel1.Controls.Add(this.unignoreButton);
-      this.panel1.Controls.Add(this.ignoreButton);
+      this.panel1.Controls.Add(this.PendIgnoredChangeButton);
+      this.panel1.Controls.Add(this.IgnorePendingChangesButton);
       this.panel1.Controls.Add(this.label2);
       this.panel1.Controls.Add(this.button1);
-      this.panel1.Controls.Add(this.ignoredChangesListBox);
+      this.panel1.Controls.Add(this.IgnoredChangesListBox);
       this.panel1.Controls.Add(this.label1);
-      this.panel1.Controls.Add(this.changesListBox);
+      this.panel1.Controls.Add(this.PendingChangesListBox);
       this.panel1.Location = new System.Drawing.Point(12, 12);
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(673, 702);
       this.panel1.TabIndex = 2;
+      // 
+      // PendCompletedChangeButton
+      // 
+      this.PendCompletedChangeButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.PendCompletedChangeButton.Location = new System.Drawing.Point(380, 481);
+      this.PendCompletedChangeButton.Name = "PendCompletedChangeButton";
+      this.PendCompletedChangeButton.Size = new System.Drawing.Size(75, 23);
+      this.PendCompletedChangeButton.TabIndex = 18;
+      this.PendCompletedChangeButton.Text = "pending /\\";
+      this.PendCompletedChangeButton.UseVisualStyleBackColor = true;
+      this.PendCompletedChangeButton.Click += new System.EventHandler(this.PendCompletedChangeButton_Click);
+      // 
+      // CompletePendingChangeButton
+      // 
+      this.CompletePendingChangeButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.CompletePendingChangeButton.Location = new System.Drawing.Point(218, 243);
+      this.CompletePendingChangeButton.Name = "CompletePendingChangeButton";
+      this.CompletePendingChangeButton.Size = new System.Drawing.Size(75, 23);
+      this.CompletePendingChangeButton.TabIndex = 17;
+      this.CompletePendingChangeButton.Text = "\\/ complete";
+      this.CompletePendingChangeButton.UseVisualStyleBackColor = true;
+      this.CompletePendingChangeButton.Click += new System.EventHandler(this.CompletePendingChangeButton_Click);
+      // 
+      // MarkAllPendingChangesButton
+      // 
+      this.MarkAllPendingChangesButton.Location = new System.Drawing.Point(548, 3);
+      this.MarkAllPendingChangesButton.Name = "MarkAllPendingChangesButton";
+      this.MarkAllPendingChangesButton.Size = new System.Drawing.Size(125, 23);
+      this.MarkAllPendingChangesButton.TabIndex = 16;
+      this.MarkAllPendingChangesButton.Text = "Mark all";
+      this.MarkAllPendingChangesButton.UseVisualStyleBackColor = true;
+      this.MarkAllPendingChangesButton.Click += new System.EventHandler(this.MarkAllPendingChangesButton_Click);
       // 
       // loadOrderedCheckbox
       // 
@@ -146,47 +178,47 @@
       this.includeNewSourceCheckbox.Text = "Include new source";
       this.includeNewSourceCheckbox.UseVisualStyleBackColor = true;
       // 
-      // markAllIgnoredButton
+      // MarkAllIgnoredChangesButton
       // 
-      this.markAllIgnoredButton.Location = new System.Drawing.Point(548, 275);
-      this.markAllIgnoredButton.Name = "markAllIgnoredButton";
-      this.markAllIgnoredButton.Size = new System.Drawing.Size(125, 23);
-      this.markAllIgnoredButton.TabIndex = 13;
-      this.markAllIgnoredButton.Text = "Mark all";
-      this.markAllIgnoredButton.UseVisualStyleBackColor = true;
-      this.markAllIgnoredButton.Click += new System.EventHandler(this.markAllIgnoredButton_Click);
+      this.MarkAllIgnoredChangesButton.Location = new System.Drawing.Point(548, 275);
+      this.MarkAllIgnoredChangesButton.Name = "MarkAllIgnoredChangesButton";
+      this.MarkAllIgnoredChangesButton.Size = new System.Drawing.Size(125, 23);
+      this.MarkAllIgnoredChangesButton.TabIndex = 13;
+      this.MarkAllIgnoredChangesButton.Text = "Mark all";
+      this.MarkAllIgnoredChangesButton.UseVisualStyleBackColor = true;
+      this.MarkAllIgnoredChangesButton.Click += new System.EventHandler(this.MarkAllIgnoredChangesButton_Click);
       // 
-      // markAllDoneButton
+      // MarkAllCompletedChangesButton
       // 
-      this.markAllDoneButton.Location = new System.Drawing.Point(548, 513);
-      this.markAllDoneButton.Name = "markAllDoneButton";
-      this.markAllDoneButton.Size = new System.Drawing.Size(125, 23);
-      this.markAllDoneButton.TabIndex = 12;
-      this.markAllDoneButton.Text = "Mark all";
-      this.markAllDoneButton.UseVisualStyleBackColor = true;
-      this.markAllDoneButton.Click += new System.EventHandler(this.markAllDoneButton_Click);
+      this.MarkAllCompletedChangesButton.Location = new System.Drawing.Point(548, 513);
+      this.MarkAllCompletedChangesButton.Name = "MarkAllCompletedChangesButton";
+      this.MarkAllCompletedChangesButton.Size = new System.Drawing.Size(125, 23);
+      this.MarkAllCompletedChangesButton.TabIndex = 12;
+      this.MarkAllCompletedChangesButton.Text = "Mark all";
+      this.MarkAllCompletedChangesButton.UseVisualStyleBackColor = true;
+      this.MarkAllCompletedChangesButton.Click += new System.EventHandler(this.MarkAllCompletedChangesButton_Click);
       // 
-      // undoneButton
+      // IgnoreCompletedChangeButton
       // 
-      this.undoneButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.undoneButton.Location = new System.Drawing.Point(299, 481);
-      this.undoneButton.Name = "undoneButton";
-      this.undoneButton.Size = new System.Drawing.Size(75, 23);
-      this.undoneButton.TabIndex = 11;
-      this.undoneButton.Text = "ignore /\\";
-      this.undoneButton.UseVisualStyleBackColor = true;
-      this.undoneButton.Click += new System.EventHandler(this.undoneButton_Click);
+      this.IgnoreCompletedChangeButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.IgnoreCompletedChangeButton.Location = new System.Drawing.Point(299, 481);
+      this.IgnoreCompletedChangeButton.Name = "IgnoreCompletedChangeButton";
+      this.IgnoreCompletedChangeButton.Size = new System.Drawing.Size(75, 23);
+      this.IgnoreCompletedChangeButton.TabIndex = 11;
+      this.IgnoreCompletedChangeButton.Text = "ignore /\\";
+      this.IgnoreCompletedChangeButton.UseVisualStyleBackColor = true;
+      this.IgnoreCompletedChangeButton.Click += new System.EventHandler(this.IgnoreCompletedChangeButton_Click);
       // 
-      // doneButton
+      // CompleteIgnoredChangeButton
       // 
-      this.doneButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.doneButton.Location = new System.Drawing.Point(218, 481);
-      this.doneButton.Name = "doneButton";
-      this.doneButton.Size = new System.Drawing.Size(75, 23);
-      this.doneButton.TabIndex = 10;
-      this.doneButton.Text = "\\/ done";
-      this.doneButton.UseVisualStyleBackColor = true;
-      this.doneButton.Click += new System.EventHandler(this.doneButton_Click);
+      this.CompleteIgnoredChangeButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.CompleteIgnoredChangeButton.Location = new System.Drawing.Point(218, 481);
+      this.CompleteIgnoredChangeButton.Name = "CompleteIgnoredChangeButton";
+      this.CompleteIgnoredChangeButton.Size = new System.Drawing.Size(75, 23);
+      this.CompleteIgnoredChangeButton.TabIndex = 10;
+      this.CompleteIgnoredChangeButton.Text = "\\/ done";
+      this.CompleteIgnoredChangeButton.UseVisualStyleBackColor = true;
+      this.CompleteIgnoredChangeButton.Click += new System.EventHandler(this.CompleteIgnoredChangeButton_Click);
       // 
       // label3
       // 
@@ -197,16 +229,16 @@
       this.label3.TabIndex = 9;
       this.label3.Text = "Completed changes";
       // 
-      // doneListBox
+      // CompletedListBox
       // 
-      this.doneListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.CompletedListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.doneListBox.FormattingEnabled = true;
-      this.doneListBox.Location = new System.Drawing.Point(0, 542);
-      this.doneListBox.Name = "doneListBox";
-      this.doneListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-      this.doneListBox.Size = new System.Drawing.Size(673, 160);
-      this.doneListBox.TabIndex = 8;
+      this.CompletedListBox.FormattingEnabled = true;
+      this.CompletedListBox.Location = new System.Drawing.Point(0, 542);
+      this.CompletedListBox.Name = "CompletedListBox";
+      this.CompletedListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+      this.CompletedListBox.Size = new System.Drawing.Size(673, 160);
+      this.CompletedListBox.TabIndex = 8;
       // 
       // copyAsXmlButton
       // 
@@ -218,27 +250,27 @@
       this.copyAsXmlButton.UseVisualStyleBackColor = true;
       this.copyAsXmlButton.Click += new System.EventHandler(this.copyAsXmlButton_Click);
       // 
-      // unignoreButton
+      // PendIgnoredChangeButton
       // 
-      this.unignoreButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.unignoreButton.Location = new System.Drawing.Point(380, 243);
-      this.unignoreButton.Name = "unignoreButton";
-      this.unignoreButton.Size = new System.Drawing.Size(75, 23);
-      this.unignoreButton.TabIndex = 6;
-      this.unignoreButton.Text = "unignore /\\";
-      this.unignoreButton.UseVisualStyleBackColor = true;
-      this.unignoreButton.Click += new System.EventHandler(this.unignoreButton_Click);
+      this.PendIgnoredChangeButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.PendIgnoredChangeButton.Location = new System.Drawing.Point(380, 243);
+      this.PendIgnoredChangeButton.Name = "PendIgnoredChangeButton";
+      this.PendIgnoredChangeButton.Size = new System.Drawing.Size(75, 23);
+      this.PendIgnoredChangeButton.TabIndex = 6;
+      this.PendIgnoredChangeButton.Text = "unignore /\\";
+      this.PendIgnoredChangeButton.UseVisualStyleBackColor = true;
+      this.PendIgnoredChangeButton.Click += new System.EventHandler(this.PendIgnoredChangeButton_Click);
       // 
-      // ignoreButton
+      // IgnorePendingChangesButton
       // 
-      this.ignoreButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.ignoreButton.Location = new System.Drawing.Point(299, 243);
-      this.ignoreButton.Name = "ignoreButton";
-      this.ignoreButton.Size = new System.Drawing.Size(75, 23);
-      this.ignoreButton.TabIndex = 5;
-      this.ignoreButton.Text = "\\/ ignore";
-      this.ignoreButton.UseVisualStyleBackColor = true;
-      this.ignoreButton.Click += new System.EventHandler(this.ignoreButton_Click);
+      this.IgnorePendingChangesButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.IgnorePendingChangesButton.Location = new System.Drawing.Point(299, 243);
+      this.IgnorePendingChangesButton.Name = "IgnorePendingChangesButton";
+      this.IgnorePendingChangesButton.Size = new System.Drawing.Size(75, 23);
+      this.IgnorePendingChangesButton.TabIndex = 5;
+      this.IgnorePendingChangesButton.Text = "\\/ ignore";
+      this.IgnorePendingChangesButton.UseVisualStyleBackColor = true;
+      this.IgnorePendingChangesButton.Click += new System.EventHandler(this.IgnorePendingChangesButton_Click);
       // 
       // label2
       // 
@@ -249,16 +281,16 @@
       this.label2.TabIndex = 4;
       this.label2.Text = "Ignored changes";
       // 
-      // ignoredChangesListBox
+      // IgnoredChangesListBox
       // 
-      this.ignoredChangesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.IgnoredChangesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.ignoredChangesListBox.FormattingEnabled = true;
-      this.ignoredChangesListBox.Location = new System.Drawing.Point(0, 304);
-      this.ignoredChangesListBox.Name = "ignoredChangesListBox";
-      this.ignoredChangesListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-      this.ignoredChangesListBox.Size = new System.Drawing.Size(673, 160);
-      this.ignoredChangesListBox.TabIndex = 3;
+      this.IgnoredChangesListBox.FormattingEnabled = true;
+      this.IgnoredChangesListBox.Location = new System.Drawing.Point(0, 304);
+      this.IgnoredChangesListBox.Name = "IgnoredChangesListBox";
+      this.IgnoredChangesListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+      this.IgnoredChangesListBox.Size = new System.Drawing.Size(673, 160);
+      this.IgnoredChangesListBox.TabIndex = 3;
       // 
       // label1
       // 
@@ -268,38 +300,6 @@
       this.label1.Size = new System.Drawing.Size(90, 13);
       this.label1.TabIndex = 2;
       this.label1.Text = "Pending changes";
-      // 
-      // markAllCompletedButton
-      // 
-      this.markAllCompletedButton.Location = new System.Drawing.Point(548, 3);
-      this.markAllCompletedButton.Name = "markAllCompletedButton";
-      this.markAllCompletedButton.Size = new System.Drawing.Size(125, 23);
-      this.markAllCompletedButton.TabIndex = 16;
-      this.markAllCompletedButton.Text = "Mark all";
-      this.markAllCompletedButton.UseVisualStyleBackColor = true;
-      this.markAllCompletedButton.Click += new System.EventHandler(this.markAllCompletedButton_Click);
-      // 
-      // completePendingButton
-      // 
-      this.completePendingButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.completePendingButton.Location = new System.Drawing.Point(218, 243);
-      this.completePendingButton.Name = "completePendingButton";
-      this.completePendingButton.Size = new System.Drawing.Size(75, 23);
-      this.completePendingButton.TabIndex = 17;
-      this.completePendingButton.Text = "\\/ complete";
-      this.completePendingButton.UseVisualStyleBackColor = true;
-      this.completePendingButton.Click += new System.EventHandler(this.completePendingButton_Click);
-      // 
-      // pendCompletedButton
-      // 
-      this.pendCompletedButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.pendCompletedButton.Location = new System.Drawing.Point(380, 481);
-      this.pendCompletedButton.Name = "pendCompletedButton";
-      this.pendCompletedButton.Size = new System.Drawing.Size(75, 23);
-      this.pendCompletedButton.TabIndex = 18;
-      this.pendCompletedButton.Text = "pending /\\";
-      this.pendCompletedButton.UseVisualStyleBackColor = true;
-      this.pendCompletedButton.Click += new System.EventHandler(this.pendCompletedButton_Click);
       // 
       // Form1
       // 
@@ -319,28 +319,28 @@
     #endregion
 
     private System.Windows.Forms.Button button1;
-    private System.Windows.Forms.ListBox changesListBox;
+    private System.Windows.Forms.ListBox PendingChangesListBox;
     private System.Windows.Forms.OpenFileDialog openFileDialog1;
     private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Button unignoreButton;
-    private System.Windows.Forms.Button ignoreButton;
+    private System.Windows.Forms.Button PendIgnoredChangeButton;
+    private System.Windows.Forms.Button IgnorePendingChangesButton;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.ListBox ignoredChangesListBox;
+    private System.Windows.Forms.ListBox IgnoredChangesListBox;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Button copyAsXmlButton;
-    private System.Windows.Forms.Button markAllIgnoredButton;
-    private System.Windows.Forms.Button markAllDoneButton;
-    private System.Windows.Forms.Button undoneButton;
-    private System.Windows.Forms.Button doneButton;
+    private System.Windows.Forms.Button MarkAllIgnoredChangesButton;
+    private System.Windows.Forms.Button MarkAllCompletedChangesButton;
+    private System.Windows.Forms.Button IgnoreCompletedChangeButton;
+    private System.Windows.Forms.Button CompleteIgnoredChangeButton;
     private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.ListBox doneListBox;
+    private System.Windows.Forms.ListBox CompletedListBox;
     private System.Windows.Forms.CheckBox includeOldSourceCheckbox;
     private System.Windows.Forms.CheckBox includeNewSourceCheckbox;
     private System.Windows.Forms.CheckBox loadOrderedCheckbox;
-    private System.Windows.Forms.Button markAllCompletedButton;
-    private System.Windows.Forms.Button pendCompletedButton;
-    private System.Windows.Forms.Button completePendingButton;
+    private System.Windows.Forms.Button MarkAllPendingChangesButton;
+    private System.Windows.Forms.Button PendCompletedChangeButton;
+    private System.Windows.Forms.Button CompletePendingChangeButton;
   }
 }
 

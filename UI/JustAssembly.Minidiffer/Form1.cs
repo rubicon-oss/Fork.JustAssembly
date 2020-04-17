@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -17,7 +16,7 @@ namespace JustAssembly.Minidiffer
       InitializeComponent();
     }
 
-    private void button1_Click (object sender, EventArgs e)
+    private void OpenChangeSetFromDisk (object sender, EventArgs args)
     {
       if (openFileDialog1.ShowDialog() != DialogResult.OK)
         return;
@@ -28,7 +27,21 @@ namespace JustAssembly.Minidiffer
         {
           var xmlReader = new XmlSerializer (typeof (ChangeSet));
           var changeSet = (ChangeSet) xmlReader.Deserialize (textReader);
-          LoadChangeSet (changeSet, loadOrderedCheckbox.Checked);
+
+          PendingChangesListBox.Items.Clear();
+          IgnoredChangesListBox.Items.Clear();
+          CompletedListBox.Items.Clear();
+
+          var changes = loadOrderedCheckbox.Checked
+              ? changeSet.MemberChanges.Where (e => e is MemberChange).OrderBy (e => $"{e.Namespace}__{e.Name}")
+              : changeSet.MemberChanges.Where (e => e is MemberChange);
+
+          var index = 0;
+          foreach (var change in changes)
+          {
+            var changeEntry = new ChangeEntry (index++, change);
+            PendingChangesListBox.Items.Add (changeEntry);
+          }
         }
       }
       catch (Exception ex)
@@ -41,88 +54,20 @@ namespace JustAssembly.Minidiffer
       }
     }
 
-    private void LoadChangeSet (ChangeSet changeSet, bool ordered)
-    {
-      changesListBox.Items.Clear();
-      ignoredChangesListBox.Items.Clear();
-      doneListBox.Items.Clear();
-
-      var changes = ordered
-          ? changeSet.MemberChanges.Where (e => e is MemberChange).OrderBy (e => $"{e.Namespace}__{e.Name}")
-          : changeSet.MemberChanges.Where (e => e is MemberChange);
-
-      var index = 0;
-      foreach (var change in changes)
-      {
-        var changeEntry = new ChangeEntry (index++, change);
-        changesListBox.Items.Add (changeEntry);
-      }
-    }
-
-    private void ignoreButton_Click (object sender, EventArgs e)
-    {
-      var changes = changesListBox.SelectedItems.Cast<ChangeEntry>().ToArray();
-      foreach (var entry in changes)
-      {
-        changesListBox.Items.Remove (entry);
-        InsertAtCorrectPosition (ignoredChangesListBox, entry);
-      }
-    }
-
-    private void unignoreButton_Click (object sender, EventArgs e)
-    {
-      var changes = ignoredChangesListBox.SelectedItems.Cast<ChangeEntry>().ToArray();
-      foreach (var entry in changes)
-      {
-        ignoredChangesListBox.Items.Remove (entry);
-        InsertAtCorrectPosition (changesListBox, entry);
-      }
-    }
-
-    private void doneButton_Click (object sender, EventArgs e)
-    {
-      var changes = ignoredChangesListBox.SelectedItems.Cast<ChangeEntry>().ToArray();
-      foreach (var entry in changes)
-      {
-        ignoredChangesListBox.Items.Remove (entry);
-        InsertAtCorrectPosition (doneListBox, entry);
-      }
-    }
-
-    private void undoneButton_Click (object sender, EventArgs e)
-    {
-      var changes = doneListBox.SelectedItems.Cast<ChangeEntry>().ToArray();
-      foreach (var entry in changes)
-      {
-        doneListBox.Items.Remove (entry);
-        InsertAtCorrectPosition (ignoredChangesListBox, entry);
-      }
-    }
-
-    private void InsertAtCorrectPosition (ListBox listBox, ChangeEntry entry)
-    {
-      var position = 0;
-      while (position < listBox.Items.Count && ((ChangeEntry) listBox.Items[position]).Index < entry.Index)
-      {
-        position++;
-      }
-
-      listBox.Items.Insert (position, entry);
-    }
 
     private void copyAsXmlButton_Click (object sender, EventArgs args)
     {
       Change[] changes;
-      if (ignoredChangesListBox.SelectedItems.Count > 0)
+      if (IgnoredChangesListBox.SelectedItems.Count > 0)
       {
-        changes = ignoredChangesListBox.SelectedItems
+        changes = IgnoredChangesListBox.SelectedItems
             .Cast<ChangeEntry>()
             .Select (e => e.Change)
             .ToArray();
       }
       else
       {
-        changes = ignoredChangesListBox.Items
+        changes = IgnoredChangesListBox.Items
             .Cast<ChangeEntry>()
             .Select (e => e.Change)
             .ToArray();
@@ -136,7 +81,7 @@ namespace JustAssembly.Minidiffer
 
       if (!includeOld || !includeNew)
       {
-        using (var shaUtility = new ShaUtility(SHA256.Create()))
+        using (var shaUtility = new ShaUtility (SHA256.Create()))
         {
           changes = changes.Select (
               e =>
@@ -184,45 +129,55 @@ namespace JustAssembly.Minidiffer
       }
     }
 
-    private void markAllIgnoredButton_Click (object sender, EventArgs e)
+    private void CompletePendingChangeButton_Click (object sender, EventArgs e)
+        => MoveChangesBetweenListBoxes (PendingChangesListBox, CompletedListBox);
+
+    private void IgnorePendingChangesButton_Click (object sender, EventArgs e)
+        => MoveChangesBetweenListBoxes (PendingChangesListBox, IgnoredChangesListBox);
+
+    private void PendIgnoredChangeButton_Click (object sender, EventArgs e)
+        => MoveChangesBetweenListBoxes (IgnoredChangesListBox, PendingChangesListBox);
+
+    private void CompleteIgnoredChangeButton_Click (object sender, EventArgs e)
+        => MoveChangesBetweenListBoxes (IgnoredChangesListBox, CompletedListBox);
+
+    private void IgnoreCompletedChangeButton_Click (object sender, EventArgs e)
+        => MoveChangesBetweenListBoxes (CompletedListBox, IgnoredChangesListBox);
+
+    private void PendCompletedChangeButton_Click (object sender, EventArgs e) => MoveChangesBetweenListBoxes (CompletedListBox, PendingChangesListBox);
+
+    private void MoveChangesBetweenListBoxes (ListBox from, ListBox to)
     {
-      SelectAllItems(ignoredChangesListBox, true);
+      var changes = from.SelectedItems.Cast<ChangeEntry>().ToArray();
+      foreach (var entry in changes)
+      {
+        from.Items.Remove (entry);
+        InsertAtCorrectPosition (to, entry);
+      }
     }
 
-    private void markAllDoneButton_Click (object sender, EventArgs e)
+    private void InsertAtCorrectPosition (ListBox listBox, ChangeEntry entry)
     {
-      SelectAllItems(doneListBox, true);
+      var position = 0;
+      while (position < listBox.Items.Count && ((ChangeEntry) listBox.Items[position]).Index < entry.Index)
+      {
+        position++;
+      }
+
+      listBox.Items.Insert (position, entry);
     }
 
-    private void markAllCompletedButton_Click (object sender, EventArgs e)
-    {
-      SelectAllItems(changesListBox, true);
-    }
+
+    private void MarkAllPendingChangesButton_Click (object sender, EventArgs e) => SelectAllItems (PendingChangesListBox, true);
+
+    private void MarkAllIgnoredChangesButton_Click (object sender, EventArgs e) => SelectAllItems (IgnoredChangesListBox, true);
+
+    private void MarkAllCompletedChangesButton_Click (object sender, EventArgs e) => SelectAllItems (CompletedListBox, true);
 
     private void SelectAllItems (ListBox listBox, bool state)
     {
       for (var i = 0; i < listBox.Items.Count; i++)
         listBox.SetSelected (i, state);
-    }
-
-    private void pendCompletedButton_Click (object sender, EventArgs e)
-    {
-      var changes = doneListBox.SelectedItems.Cast<ChangeEntry>().ToArray();
-      foreach (var entry in changes)
-      {
-        doneListBox.Items.Remove (entry);
-        InsertAtCorrectPosition (changesListBox, entry);
-      }
-    }
-
-    private void completePendingButton_Click (object sender, EventArgs e)
-    {
-      var changes = changesListBox.SelectedItems.Cast<ChangeEntry>().ToArray();
-      foreach (var entry in changes)
-      {
-        changesListBox.Items.Remove (entry);
-        InsertAtCorrectPosition (doneListBox, entry);
-      }
     }
   }
 }
