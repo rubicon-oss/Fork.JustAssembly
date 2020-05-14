@@ -7,7 +7,7 @@ namespace JustAssembly.CommandLineTool
 {
   public class IgnoredChangesSet
   {
-    private readonly Dictionary<ChangeKey, Change> _ignoredChangesLookup;
+    private readonly Dictionary<ChangeKey, List<Change>> _ignoredChangesLookup;
 
     public IgnoredChangesSet (ChangeSet changeSet)
     {
@@ -16,31 +16,34 @@ namespace JustAssembly.CommandLineTool
 
     public bool Contains (Change change)
     {
-      Change ignoreChange;
-      return _ignoredChangesLookup.TryGetValue (new ChangeKey (change.Namespace, change.Name), out ignoreChange) && ignoreChange == change;
+      List<Change> ignoredChanges;
+      if (!_ignoredChangesLookup.TryGetValue (new ChangeKey (change.Namespace, change.Name), out ignoredChanges))
+        return false;
+
+      return ignoredChanges.Any (e => e == change);
     }
 
-    private static Dictionary<ChangeKey, Change> ToDictionary (ChangeSet changeSet)
+    private static Dictionary<ChangeKey, List<Change>> ToDictionary (ChangeSet changeSet)
     {
-      //return changeSet.MemberChanges.ToDictionary (e => new ChangeKey (e.Namespace, e.Name), e => e);
-
-
-      ChangeKey key = default(ChangeKey);
-      try
+      var result = new Dictionary<ChangeKey, List<Change>>();
+      foreach (var change in changeSet.MemberChanges)
       {
-        var result = new Dictionary<ChangeKey, Change>();
-        foreach (var change in changeSet.MemberChanges)
+        var key = new ChangeKey (change.Namespace, change.Name);
+
+        List<Change> ignoredChanges;
+        if (result.TryGetValue (key, out ignoredChanges))
         {
-          key = new ChangeKey (change.Namespace, change.Name);
-          result.Add (key, change);
+          if (ignoredChanges.Any (e => e == change))
+            throw new InvalidOperationException ($"The ignore change set contains the duplicate entry '{key}'.");
+
+          ignoredChanges.Add (change);
+          continue;
         }
 
-        return result;
+        result.Add (key, new List<Change> (1) { change });
       }
-      catch (ArgumentException ex)
-      {
-        throw new InvalidOperationException ($"Change set contains duplicate entry: '{key}'.", ex);
-      }
+
+      return result;
     }
   }
 }
