@@ -15,22 +15,30 @@ namespace JustAssembly.CommandLineTool.XML
     [XmlAttribute ("ChangeType")]
     public DifferenceDecoration Type { get; set; }
 
+    [XmlElement ("OldSource")]
+    public SourceText OldSource { get; set; }
+
+    [XmlElement ("NewSource")]
+    public SourceText NewSource { get; set; }
+
     public Change ()
     {
     }
 
-    protected Change (string @namespace, string name, DifferenceDecoration type)
+    protected Change (string @namespace, string name, DifferenceDecoration type, SourceText oldSource, SourceText newSource)
     {
       Namespace = @namespace;
       Name = name;
       Type = type;
+      OldSource = oldSource;
+      NewSource = newSource;
     }
 
     public abstract Change Clone ();
 
     protected bool Equals (Change other)
     {
-      return string.Equals (Name, other.Name) && Type == other.Type && string.Equals (Namespace, other.Namespace);
+      return Namespace == other.Namespace && Name == other.Name && Type == other.Type && OldSource == other.OldSource && NewSource == other.NewSource;
     }
 
     public override bool Equals (object obj)
@@ -45,9 +53,11 @@ namespace JustAssembly.CommandLineTool.XML
     {
       unchecked
       {
-        var hashCode = Name.GetHashCode();
+        var hashCode = Namespace.GetHashCode();
+        hashCode = (hashCode * 397) ^ Name.GetHashCode();
         hashCode = (hashCode * 397) ^ (int) Type;
-        hashCode = (hashCode * 397) ^ Namespace.GetHashCode();
+        hashCode = (hashCode * 397) ^ (OldSource != null ? OldSource.GetHashCode() : 0);
+        hashCode = (hashCode * 397) ^ (NewSource != null ? NewSource.GetHashCode() : 0);
         return hashCode;
       }
     }

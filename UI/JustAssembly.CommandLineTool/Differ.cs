@@ -52,15 +52,26 @@ namespace JustAssembly.CommandLineTool
       return AssemblyNode.Create (assemblyMap, generationProjectInfoMap);
     }
 
-    public string CreateXMLDiff (AssemblyNode assemblyNode)
+    public ChangeSet CreateChangeSet (AssemblyNode assemblyNode)
     {
       try
       {
         var visitor = new ChangeSetNodeVisitor (ignoreChangeSet, true);
         assemblyNode.Accept (visitor);
 
-        var changeSet = visitor.AsChangeSet();
+        return visitor.AsChangeSet();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine ("Could not decompiler: \r\n" + ex);
+        throw ex;
+      }
+    }
 
+    public string CreateXMLDiff (ChangeSet changeSet)
+    {
+      try
+      {
         var xmlSerializer = new XmlSerializer (typeof (ChangeSet));
         using (var stringWriter = new StringWriter())
         {
@@ -75,15 +86,10 @@ namespace JustAssembly.CommandLineTool
       }
     }
 
-    public void CreatePatchFileAndSources (AssemblyNode assemblyNode, string patchFilePath, string sourcesPath)
+    public void CreatePatchFileAndSources (ChangeSet changeSet, string patchFilePath, string sourcesPath)
     {
       try
       {
-        var visitor = new ChangedNodesNodeVisitor (ignoreChangeSet, true);
-        assemblyNode.Accept (visitor);
-
-        var changedNodes = visitor.GetChangedNodes();
-
         var tempFolder = Path.Combine (Path.GetTempPath(), "JustAssembly_" + Path.GetRandomFileName());
         Directory.CreateDirectory (tempFolder);
 
@@ -94,27 +100,29 @@ namespace JustAssembly.CommandLineTool
         Directory.CreateDirectory (newFolder);
 
 
-        foreach (var node in changedNodes)
+        foreach (var change in changeSet.MemberChanges)
         {
-          var fileName = GetNormalizedName (node);
-
-          if (!string.IsNullOrEmpty (node.OldSource))
+          var fileName = GetNormalizedName (change);
+          
+          if (change.OldSource != null && !string.IsNullOrEmpty (change.OldSource.Text))
           {
             using (var writer = File.CreateText (Path.Combine (oldFolder, fileName)))
             {
-              writer.WriteLine ("# Namespace: " + node.Namespace);
-              writer.WriteLine ("# Name: " + node.Name);
-              writer.Write (node.OldSource);
+              writer.WriteLine ("# Namespace: " + change.Namespace);
+              writer.WriteLine ("# Name: " + change.Name);
+              writer.WriteLine ("# Hash: " + change.OldSource.Hash);
+              writer.Write (change.OldSource.Text);
             }
           }
 
-          if (!string.IsNullOrEmpty (node.NewSource))
+          if (change.NewSource != null && !string.IsNullOrEmpty (change.NewSource.Text))
           {
             using (var writer = File.CreateText (Path.Combine (newFolder, fileName)))
             {
-              writer.WriteLine ("# Namespace: " + node.Namespace);
-              writer.WriteLine ("# Name: " + node.Name);
-              writer.Write (node.NewSource);
+              writer.WriteLine ("# Namespace: " + change.Namespace);
+              writer.WriteLine ("# Name: " + change.Name);
+              writer.WriteLine ("# Hash: " + change.NewSource.Hash);
+              writer.Write (change.NewSource.Text);
             }
           }
         }
@@ -163,13 +171,13 @@ namespace JustAssembly.CommandLineTool
           progressNotifier);
     }
 
-    private static string GetNormalizedName (MemberNodeBase node)
+    private static string GetNormalizedName (Change change)
     {
-      string ns = node.Namespace;
+      string ns = change.Namespace;
       if (ns.Length > 120)
         ns = ns.Substring (0, 120);
 
-      string name = node.Name;
+      string name = change.Name;
       if (name.Length > 50)
         name = name.Substring (0, 50);
 

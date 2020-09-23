@@ -149,6 +149,27 @@ namespace JustAssembly.CommandLineTool
       xmlWriter.WriteAttributeString ("Name", node.Name);
       xmlWriter.WriteAttributeString ("DiffType", node.DifferenceDecoration.ToString());
 
+      if (includeSourceCode)
+      {
+        var oldText = node.OldText;
+        if (!string.IsNullOrEmpty (oldText))
+        {
+          xmlWriter.WriteStartElement ("Source");
+          xmlWriter.WriteAttributeString ("Type", "Old");
+          xmlWriter.WriteCData (string.Concat (Environment.NewLine, oldText, Environment.NewLine));
+          xmlWriter.WriteEndElement();
+        }
+
+        var newText = node.NewText;
+        if (!string.IsNullOrEmpty (newText))
+        {
+          xmlWriter.WriteStartElement ("Source");
+          xmlWriter.WriteAttributeString ("Type", "New");
+          xmlWriter.WriteCData (string.Concat (Environment.NewLine, newText, Environment.NewLine));
+          xmlWriter.WriteEndElement();
+        }
+      }
+
       xmlWriter.WriteEndElement();
     }
 

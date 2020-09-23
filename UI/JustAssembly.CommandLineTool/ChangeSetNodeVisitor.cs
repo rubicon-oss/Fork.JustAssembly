@@ -107,10 +107,24 @@ namespace JustAssembly.CommandLineTool
       if (node.DifferenceDecoration == DifferenceDecoration.NoDifferences)
         return;
 
+      SourceText oldSourceText = null, newSourceText = null;
+      if (IncludeSourceCode)
+      {
+        var oldSource = node.OldText;
+        if (oldSource != null)
+          oldSourceText = new SourceText (oldSource, _shaUtility.ComputeHashAsString (oldSource));
+
+        var newSource = node.NewText;
+        if (newSource != null)
+          newSourceText = new SourceText (newSource, _shaUtility.ComputeHashAsString (newSource));
+      }
+
       Change change = new ResourceChange (
           node.Namespace,
           node.Name,
-          node.DifferenceDecoration);
+          node.DifferenceDecoration,
+          oldSourceText,
+          newSourceText);
 
       if (_ignoreChangeSet.Contains (change))
         return;

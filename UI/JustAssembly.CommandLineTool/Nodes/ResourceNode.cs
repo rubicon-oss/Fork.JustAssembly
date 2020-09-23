@@ -10,8 +10,18 @@ namespace JustAssembly.CommandLineTool.Nodes
   {
     public IOldToNewTupleMap<string> Map { get; }
 
+    public string OldText
+    {
+      get { return Map.OldType == null ? null : File.ReadAllText (Map.OldType); }
+    }
+
+    public string NewText
+    {
+      get { return Map.NewType == null ? null : File.ReadAllText (Map.NewType); }
+    }
+
     public ResourceNode (AssemblyNode parent, IOldToNewTupleMap<string> map)
-        : base (parent, "", Path.GetFileName (map.GetFirstNotNullItem())) // todo add correct namespace
+        : base (parent, "", Path.GetFileName (map.GetFirstNotNullItem()))
     {
       Map = map;
     }

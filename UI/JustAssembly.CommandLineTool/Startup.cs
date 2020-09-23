@@ -83,8 +83,8 @@ namespace JustAssembly.CommandLineTool
                     using (var textReader = File.OpenText (ignoreFile))
                     {
                         var xmlReader = new XmlSerializer (typeof (ChangeSet));
-                        var changeSet = (ChangeSet) xmlReader.Deserialize (textReader);
-                        ignoreChangeSet = new IgnoredChangesSet (changeSet);
+                        var rawChangeSet = (ChangeSet) xmlReader.Deserialize (textReader);
+                        ignoreChangeSet = new IgnoredChangesSet (rawChangeSet);
                     }
 
                 }
@@ -97,14 +97,46 @@ namespace JustAssembly.CommandLineTool
 
             var differ = new Differ(ignoreChangeSet, new EmptyFileGenerationNotifier());
 
-            AssemblyNode assemblyNode;
-            string xml = string.Empty;
+            ChangeSet changeSet;
             try
             {
                 var typesMap = new OldToNewTupleMap<string> (oldAssemblyPath, newAssemblyPath);
-                assemblyNode = differ.CreateAssemblyNode (typesMap);
-                
-                xml = differ.CreateXMLDiff(assemblyNode);
+                var assemblyNode = differ.CreateAssemblyNode (typesMap);
+                changeSet = differ.CreateChangeSet (assemblyNode);
+            }
+            catch (Exception ex)
+            {
+                WriteExceptionAndSetErrorCode("A problem occurred while creating the change set.", ex);
+                return;
+            }
+
+            try
+            {
+                differ.CreatePatchFileAndSources (
+                    changeSet, 
+                    Path.ChangeExtension (outputPath, ".patch"),
+                    Path.ChangeExtension (outputPath, ".zip"));
+            }
+            catch (Exception ex)
+            {
+                WriteExceptionAndSetErrorCode("There was a problem while writing the patch file.", ex);
+                return;
+            }
+
+            string xml = string.Empty;
+            try
+            {
+                foreach (var change in changeSet.MemberChanges)
+                {
+                    if (change is ResourceChange)
+                    {
+                        if (change.OldSource != null)
+                            change.OldSource.Text = null;
+                        if (change.NewSource != null)
+                            change.NewSource.Text = null;
+                    }
+                }
+                xml = differ.CreateXMLDiff(changeSet);
             }
             catch (Exception ex)
             {
@@ -124,20 +156,7 @@ namespace JustAssembly.CommandLineTool
                 WriteExceptionAndSetErrorCode("There was a problem while writing output file.", ex);
                 return;
             }
-
-            try
-            {
-              differ.CreatePatchFileAndSources (
-                  assemblyNode, 
-                  Path.ChangeExtension (outputPath, ".patch"),
-                  Path.ChangeExtension (outputPath, ".zip"));
-            }
-            catch (Exception ex)
-            {
-                WriteExceptionAndSetErrorCode("There was a problem while writing the patch file.", ex);
-                return;
-            }
-
+      
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("API differences calculated successfully.");
             Console.ResetColor();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -33,8 +34,8 @@ namespace JustAssembly.Minidiffer
           CompletedListBox.Items.Clear();
 
           var changes = loadOrderedCheckbox.Checked
-              ? changeSet.MemberChanges.Where (e => e is MemberChange).OrderBy (e => $"{e.Namespace}__{e.Name}")
-              : changeSet.MemberChanges.Where (e => e is MemberChange);
+              ? (IEnumerable<Change>) changeSet.MemberChanges.OrderBy (e => $"{e.Namespace}__{e.Name}")
+              : changeSet.MemberChanges;
 
           var index = 0;
           foreach (var change in changes)

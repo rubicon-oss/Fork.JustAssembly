@@ -11,7 +11,7 @@ namespace JustAssembly.CommandLineTool
   internal class ChangedNodesNodeVisitor : NodeVisitorBase
   {
     private readonly IgnoredChangesSet _ignoreChangeSet;
-    private readonly List<MemberNodeBase> _changedNodes = new List<MemberNodeBase>();
+    private readonly List<NodeBase> _changedNodes = new List<NodeBase>();
 
     private readonly ShaUtility _shaUtility = new ShaUtility (SHA256.Create());
 
@@ -23,7 +23,7 @@ namespace JustAssembly.CommandLineTool
       IncludeSourceCode = includeSourceCode;
     }
 
-    public IReadOnlyList<MemberNodeBase> GetChangedNodes ()
+    public IReadOnlyList<NodeBase> GetChangedNodes ()
     {
       return _changedNodes;
     }
@@ -35,6 +35,9 @@ namespace JustAssembly.CommandLineTool
 
       foreach (var module in node.Modules)
         module.Accept (this);
+
+      foreach (var resource in node.Resources)
+        resource.Accept (this);
     }
 
 
@@ -88,6 +91,36 @@ namespace JustAssembly.CommandLineTool
       }
 
       Change change = new MemberChange (
+          node.Namespace,
+          node.Name,
+          node.DifferenceDecoration,
+          oldSourceText,
+          newSourceText);
+
+      if (_ignoreChangeSet.Contains (change))
+        return;
+
+      _changedNodes.Add (node);
+    }
+
+    public override void VisitResourceNode (ResourceNode node)
+    {
+      if (node.DifferenceDecoration == DifferenceDecoration.NoDifferences)
+        return;
+
+      SourceText oldSourceText = null, newSourceText = null;
+      if (IncludeSourceCode)
+      {
+        var oldText = node.OldText;
+        if (oldText != null)
+          oldSourceText = new SourceText (oldText, _shaUtility.ComputeHashAsString (oldText));
+
+        var newText = node.NewText;
+        if (newText != null)
+          newSourceText = new SourceText (newText, _shaUtility.ComputeHashAsString (newText));
+      }
+
+      Change change = new ResourceChange (
           node.Namespace,
           node.Name,
           node.DifferenceDecoration,
