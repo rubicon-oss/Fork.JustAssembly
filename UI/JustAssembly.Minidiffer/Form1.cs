@@ -12,9 +12,12 @@ namespace JustAssembly.Minidiffer
 {
   public partial class Form1 : Form
   {
-    public Form1 ()
+    public Form1(string path)
     {
       InitializeComponent();
+
+      if (path != null)
+        OpenChangeSet (path);
     }
 
     private void OpenChangeSetFromDisk (object sender, EventArgs args)
@@ -22,9 +25,24 @@ namespace JustAssembly.Minidiffer
       if (openFileDialog1.ShowDialog() != DialogResult.OK)
         return;
 
+      OpenChangeSet (openFileDialog1.FileName);
+    }
+
+    public void OpenChangeSet (string path)
+    {
+      if (!File.Exists (path))
+      {
+        MessageBox.Show(
+            $"Could not find the specified change set:\r\n  '{path}'",
+            "Error while opening change set",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error);
+        return;
+      }
+
       try
       {
-        using (var textReader = File.OpenText (openFileDialog1.FileName))
+        using (var textReader = File.OpenText (path))
         {
           var xmlReader = new XmlSerializer (typeof (ChangeSet));
           var changeSet = (ChangeSet) xmlReader.Deserialize (textReader);
@@ -123,7 +141,12 @@ namespace JustAssembly.Minidiffer
         xmlSerializer.Serialize (stringWriter, changeSet);
 
         var result = stringWriter.ToString();
-        var parts = result.Split (new[] { Environment.NewLine }, StringSplitOptions.None).ToArray();
+        var parts = result.Split (
+            new[]
+            {
+              Environment.NewLine
+            },
+            StringSplitOptions.None).ToArray();
 
 
         Clipboard.SetText (string.Join (Environment.NewLine, parts.Skip (3).Take (parts.Length - 5)));
@@ -131,19 +154,19 @@ namespace JustAssembly.Minidiffer
     }
 
     private void CompletePendingChangeButton_Click (object sender, EventArgs e)
-        => MoveChangesBetweenListBoxes (PendingChangesListBox, CompletedListBox);
+      => MoveChangesBetweenListBoxes (PendingChangesListBox, CompletedListBox);
 
     private void IgnorePendingChangesButton_Click (object sender, EventArgs e)
-        => MoveChangesBetweenListBoxes (PendingChangesListBox, IgnoredChangesListBox);
+      => MoveChangesBetweenListBoxes (PendingChangesListBox, IgnoredChangesListBox);
 
     private void PendIgnoredChangeButton_Click (object sender, EventArgs e)
-        => MoveChangesBetweenListBoxes (IgnoredChangesListBox, PendingChangesListBox);
+      => MoveChangesBetweenListBoxes (IgnoredChangesListBox, PendingChangesListBox);
 
     private void CompleteIgnoredChangeButton_Click (object sender, EventArgs e)
-        => MoveChangesBetweenListBoxes (IgnoredChangesListBox, CompletedListBox);
+      => MoveChangesBetweenListBoxes (IgnoredChangesListBox, CompletedListBox);
 
     private void IgnoreCompletedChangeButton_Click (object sender, EventArgs e)
-        => MoveChangesBetweenListBoxes (CompletedListBox, IgnoredChangesListBox);
+      => MoveChangesBetweenListBoxes (CompletedListBox, IgnoredChangesListBox);
 
     private void PendCompletedChangeButton_Click (object sender, EventArgs e) => MoveChangesBetweenListBoxes (CompletedListBox, PendingChangesListBox);
 
